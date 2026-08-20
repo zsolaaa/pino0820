@@ -17,7 +17,7 @@
   --text-on-ink: #F3E9D6;
   --text-on-ink-soft: #BFA98A;
   --text-on-green: #ECE3C8;
-  --text-on-green-soft: #A9C4AF;
+  --text-on-green-soft: #B3CDBA;
   --text-on-red: #FBEEE4;
   --text-on-marigold: #241205;
 
@@ -477,6 +477,15 @@ p { margin: 0; }
   color: var(--text-on-green-soft);
   margin-bottom: 1.5rem;
   font-size: 0.95rem;
+}
+.menu-subcat {
+  font-family: var(--label);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--marigold);
+  margin: 1.75rem 0 0.75rem;
 }
 .menu-columns {
   display: grid;

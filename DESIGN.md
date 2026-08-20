@@ -16,7 +16,7 @@ Full-palette strategy, 4 named roles plus the cream/paper base:
 - `--green` `#1F5C3D` / `--green-deep` `#163F2A` — full menu section
 - `--marigold` `#F0B32B` — USP band, accent highlights (ticker odd words, "csípős" tags, price tags on dark)
 
-Secondary text on colored surfaces is tinted from that surface's hue family (e.g. `--text-on-green-soft`), never plain gray.
+Secondary text on colored surfaces is tinted from that surface's hue family (e.g. `--text-on-green-soft`), never plain gray. `--text-on-green-soft` was lightened from `#A9C4AF` to `#B3CDBA` (WCAG AA fix from the /impeccable critique run — was ~4.2:1, now ~4.65:1 against `--green`).
 
 ## Type
 
@@ -29,6 +29,8 @@ Secondary text on colored surfaces is tinted from that surface's hue family (e.g
 - **Buttons**: `.btn-primary` (solid red, hard 4px offset shadow), `.btn-ghost` (outline, inverts to ink on hover), `.btn-call` (compact ink pill in header).
 - **Review cards**: `.review-card`, flat paper background, drawn 5-star SVG rating, initial-letter avatar circle, oversized typographic quote mark. Content is 3 real Google reviews the owner supplied verbatim (names, star counts, text) — not fabricated testimonials.
 - **Menu rows**: `.menu-row`, dotted leader between name and price (hidden on mobile in favor of wrapped stacking), `em` inline tag for "csípős".
+- **Menu jump nav**: `.menu-jumpnav`, sticky pill row on `etlap.html` pinned under the header, jumps to each of the 7 category anchors (`scroll-margin-top` accounts for the sticky header + nav stack).
+- **Menu subcategories**: `.menu-subcat`, a small marigold label grouping items within one `.menu-cat` (used to split "Extra feltétek" into Sajtok / Húsok / Zöldségek) — not a decorative kicker, it carries real grouping information.
 - **Ticker**: infinite horizontal marquee strip, ink background, marigold accent on alternating words.
 - **Placeholder images**: `.ph-image`, diagonal-stripe pattern with a labeled tag naming the expected filename (see `IMAGE_PROMPTS.md`); replaced automatically once a real file lands at that path.
 
