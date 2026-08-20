@@ -29,6 +29,8 @@ Stílus minden képen: természetes fény, meleg tónusok (krém/borostyán hát
 ## 3. Történet / konyha kép
 **Fájlnév:** `images/story-oven.jpg`
 
+**Jelenleg ideiglenesen a `gallery-2.jpg` (pult, 5 kirakott pizza) fotó van itt is, hogy ne maradjon üres helykitöltő. Cseréld le egy dedikált konyhai/csapat fotóra, amikor van ilyen.**
+
 > Candid photo of young pizza chefs' hands stretching fresh pizza dough by hand on a floured wooden counter, flour dust in the air, warm kitchen lighting, shallow depth of field, authentic pizzeria atmosphere, 4:3 landscape aspect ratio.
 
 *(Ha van valódi fotótok a csapatról vagy a konyhátokról, azt érdemes inkább használni — hitelesebb, mint bármilyen generált kép.)*
