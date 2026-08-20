@@ -311,59 +311,80 @@ p { margin: 0; }
   .ticker-track { animation: none; }
 }
 
-/* ============ Signature ============ */
-.signature { padding: clamp(4rem, 8vw, 7rem) 0; }
-.signature-grid {
+/* ============ Reviews ============ */
+.reviews { padding: clamp(4rem, 8vw, 7rem) 0; }
+.reviews-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: clamp(1.5rem, 3vw, 2.25rem);
 }
-.signature-card {
+.review-card {
+  position: relative;
   background: var(--paper);
   border: 1px solid rgba(28,20,14,0.12);
   border-radius: var(--radius);
-  padding: 1.25rem 1.25rem 1.75rem;
+  padding: 1.75rem 1.5rem 1.5rem;
+  display: flex;
+  flex-direction: column;
   transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
 }
-.signature-card:hover {
+.review-card:hover {
   transform: translateY(-6px);
   box-shadow: 0 18px 34px -20px rgba(28,20,14,0.4);
 }
-.signature-card.featured { background: var(--red); color: var(--text-on-red); border-color: var(--red-deep); }
-.signature-card.featured .tag { color: var(--marigold); }
-.signature-card.featured .desc { color: rgba(251,238,228,0.85); }
-.signature-image {
-  aspect-ratio: 1 / 1;
-  border-radius: var(--radius);
-  margin-bottom: 1.25rem;
+.review-quote {
+  position: absolute;
+  top: 0.5rem;
+  right: 1.25rem;
+  font-family: var(--display);
+  font-size: 4rem;
+  font-weight: 900;
+  color: var(--cream-deep);
+  line-height: 1;
+  pointer-events: none;
 }
-.signature-card .tag {
+.review-stars {
+  display: flex;
+  gap: 0.2rem;
+  margin-bottom: 0.9rem;
+}
+.review-stars .star {
+  width: 16px;
+  height: 16px;
+  fill: var(--marigold-deep);
+}
+.review-text {
+  font-family: var(--serif);
+  font-size: 1rem;
+  color: var(--text-on-cream);
+  flex: 1;
+}
+.review-author {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(28,20,14,0.1);
+}
+.review-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--red);
+  color: var(--text-on-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-family: var(--label);
-  font-size: 0.72rem;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--red);
+  font-size: 0.95rem;
+  flex-shrink: 0;
 }
-.signature-card h3 {
-  font-size: 1.7rem;
-  margin-top: 0.4rem;
-}
-.signature-card .desc {
-  font-size: 0.92rem;
-  color: var(--text-on-cream-soft);
-  margin-top: 0.6rem;
-  min-height: 2.6em;
-}
-.signature-card .price {
+.review-name {
   font-family: var(--label);
-  font-weight: 700;
-  font-size: 1.1rem;
-  margin-top: 1rem;
-}
-.signature-more {
-  text-align: center;
-  margin-top: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 600;
+  font-size: 0.9rem;
 }
 
 .menu-preview-more {
@@ -722,7 +743,7 @@ p { margin: 0; }
   .hero-grid { grid-template-columns: 1fr; }
   .hero-media { order: -1; }
   .hero-image { aspect-ratio: 16 / 10; }
-  .signature-grid { grid-template-columns: 1fr; }
+  .reviews-grid { grid-template-columns: 1fr; }
   .menu-columns { grid-template-columns: 1fr; gap: 0; }
   .story-grid { grid-template-columns: 1fr; }
   .story-media { order: -1; }

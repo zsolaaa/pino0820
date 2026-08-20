@@ -10,9 +10,9 @@ Bold, condensed poster typography over full-bleed color-block sections, reskinne
 
 Full-palette strategy, 4 named roles plus the cream/paper base:
 
-- `--cream` `#F6EFE2` / `--paper` `#FBF7EE` — base ground, signature cards, story/ingredients/gallery sections
+- `--cream` `#F6EFE2` / `--paper` `#FBF7EE` — base ground, review cards, story/ingredients/gallery sections
 - `--ink` `#1C140E` / `--ink-soft` `#2A1F16` — header ticker, process section, footer
-- `--red` `#C4291E` / `--red-deep` `#9C1F17` — primary accent, CTA buttons, featured signature card, closing CTA band
+- `--red` `#C4291E` / `--red-deep` `#9C1F17` — primary accent, CTA buttons, review avatar circles, closing CTA band
 - `--green` `#1F5C3D` / `--green-deep` `#163F2A` — full menu section
 - `--marigold` `#F0B32B` — USP band, accent highlights (ticker odd words, "csípős" tags, price tags on dark)
 
@@ -27,7 +27,7 @@ Secondary text on colored surfaces is tinted from that surface's hue family (e.g
 ## Components
 
 - **Buttons**: `.btn-primary` (solid red, hard 4px offset shadow), `.btn-ghost` (outline, inverts to ink on hover), `.btn-call` (compact ink pill in header).
-- **Signature cards**: `.signature-card`, flat paper background, one `.featured` variant fully inverted to red.
+- **Review cards**: `.review-card`, flat paper background, drawn 5-star SVG rating, initial-letter avatar circle, oversized typographic quote mark. Content is 3 real Google reviews the owner supplied verbatim (names, star counts, text) — not fabricated testimonials.
 - **Menu rows**: `.menu-row`, dotted leader between name and price (hidden on mobile in favor of wrapped stacking), `em` inline tag for "csípős".
 - **Ticker**: infinite horizontal marquee strip, ink background, marigold accent on alternating words.
 - **Placeholder images**: `.ph-image`, diagonal-stripe pattern with a labeled tag naming the expected filename (see `IMAGE_PROMPTS.md`); replaced automatically once a real file lands at that path.
@@ -38,12 +38,12 @@ Single breakpoint at 980px collapses nav to a hamburger/full-screen list, stacks
 
 ## Pages
 
-- `index.html` — landing page: hero, 3 signature pizzas (with a link to the full menu), story, ingredients, process, gallery, USP band, CTA/contact, footer.
-- `etlap.html` — standalone full menu page (all pizzas + pasta with prices), reusing the same header/footer and the `.menu-full` green section; linked from the header nav, hero CTA, signature section, and footer on every page.
+- `index.html` — landing page: hero, Google reviews (`#reviews`), a compact menu preview with a link to the full menu, story, ingredients, process, gallery, USP band, CTA/contact, footer.
+- `etlap.html` — standalone full menu page (all pizzas + pasta + salad/extras/drinks/coffee/dessert with prices), reusing the same header/footer and the `.menu-full` green section; linked from the header nav, hero CTA, menu preview, and footer on every page.
 
 ## Known gaps / next steps
 
-- Hero, 3 signature-pizza cards, 5 ingredient photos, and the 6-image gallery are filled with real/generated photography. The gallery uses 6 authentic photos the owner supplied from the actual pizzeria (real Baja terrace, real dishes), selected for a pizza/pasta mix and visual variety.
+- Hero, 5 ingredient photos, and the 6-image gallery are filled with real/generated photography. The gallery uses 6 authentic photos the owner supplied from the actual pizzeria (real Baja terrace, real dishes), selected for a pizza/pasta mix and visual variety. `images/signature-*.jpg` are now unused since the signature-pizza cards were replaced by the reviews section.
 - `story-oven.jpg` is still a placeholder — no kitchen/founders photo supplied yet; prompt is in `IMAGE_PROMPTS.md`.
 - The owner's supplied photos also included a pizza box bearing a real hand-drawn **Pinocchio mascot logo** (green/red cartoon boy with a pizza), not currently used anywhere on the page since no logo asset was scoped into this build — worth a follow-up to incorporate as an actual brand mark instead of the current wordmark-only header/footer.
 - No online ordering/reservation system is wired up — CTAs route to `tel:` and a Google Maps search link only, per confirmed product scope.
