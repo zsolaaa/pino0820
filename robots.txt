@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zsolaaa.github.io/pino0820/sitemap.xml
