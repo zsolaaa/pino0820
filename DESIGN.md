@@ -14,7 +14,7 @@ Full-palette strategy, 4 named roles plus the cream/paper base:
 - `--ink` `#1C140E` / `--ink-soft` `#2A1F16` — header ticker, process section, footer
 - `--red` `#C4291E` / `--red-deep` `#9C1F17` — primary accent, CTA buttons, review avatar circles, closing CTA band
 - `--green` `#1F5C3D` / `--green-deep` `#163F2A` — full menu section
-- `--marigold` `#F0B32B` — USP band, accent highlights (ticker odd words, "csípős" tags, price tags on dark)
+- `--marigold` `#F0B32B` — FAQ band, accent highlights (ticker odd words, "csípős" tags, price tags on dark)
 
 Secondary text on colored surfaces is tinted from that surface's hue family (e.g. `--text-on-green-soft`), never plain gray. `--text-on-green-soft` was lightened from `#A9C4AF` to `#B3CDBA` (WCAG AA fix from the /impeccable critique run — was ~4.2:1, now ~4.65:1 against `--green`).
 
@@ -33,6 +33,7 @@ Secondary text on colored surfaces is tinted from that surface's hue family (e.g
 - **Menu subcategories**: `.menu-subcat`, a small marigold label grouping items within one `.menu-cat` (used to split "Extra feltétek" into Sajtok / Húsok / Zöldségek) — not a decorative kicker, it carries real grouping information.
 - **Ticker**: infinite horizontal marquee strip, ink background, marigold accent on alternating words.
 - **Placeholder images**: `.ph-image`, diagonal-stripe pattern with a labeled tag naming the expected filename (see `IMAGE_PROMPTS.md`); replaced automatically once a real file lands at that path.
+- **FAQ accordion**: `.faq-item` (native `<details>`/`<summary>`), marigold band, plus/minus icon built from two CSS pseudo-elements that rotate on `[open]`. Copy grounded in confirmed product facts (hours, address, phone-only ordering, delivery, payment methods, dough, spice tags, pasta substitution) plus owner-confirmed answers on parking, payment methods, dietary options, and delivery minimum/fee — no fabricated claims.
 
 ## Responsive rules
 
@@ -40,7 +41,7 @@ Single breakpoint at 980px collapses nav to a hamburger/full-screen list, stacks
 
 ## Pages
 
-- `index.html` — landing page: hero, Google reviews (`#reviews`), a compact menu preview with a link to the full menu, story, ingredients, process, gallery, USP band, CTA/contact, footer.
+- `index.html` — landing page: hero, Google reviews (`#reviews`), a compact menu preview with a link to the full menu, story, ingredients, process, gallery, FAQ accordion (`#faq`), CTA/contact, footer.
 - `etlap.html` — standalone full menu page (all pizzas + pasta + salad/extras/drinks/coffee/dessert with prices), reusing the same header/footer and the `.menu-full` green section; linked from the header nav, hero CTA, menu preview, and footer on every page.
 
 ## Known gaps / next steps
