@@ -282,10 +282,13 @@ p { margin: 0; }
   margin-top: 2.25rem;
 }
 .hero-image {
+  display: block;
+  width: 100%;
+  height: auto;
   aspect-ratio: 4 / 5;
   border-radius: var(--radius);
+  object-fit: cover;
 }
-.hero-image .ph-label { margin-left: auto; }
 
 .ticker {
   margin-top: clamp(3rem, 6vw, 5rem);
@@ -1172,10 +1175,19 @@ p { margin: 0; }
   .ingredient-row { grid-template-columns: repeat(2, 1fr); }
   .header-inner { gap: 0.75rem; }
   .btn-call span.label-full { display: none; }
+  .hero-image { aspect-ratio: 16 / 8; }
+  .hero-lede { margin-top: 1rem; }
+  .hero-actions { margin-top: 1.5rem; }
   .hero-actions .btn { width: 100%; justify-content: center; }
   .grant-badge { left: 0.6rem; top: calc(var(--header-h) + 0.6rem); bottom: auto; width: 170px; }
   .legal-def-row { grid-template-columns: 1fr; gap: 0.2rem; }
-  .cookie-banner { left: 0; right: 0; bottom: 0; max-width: none; border-radius: 0; }
+  .cookie-banner {
+    left: 0; right: 0; bottom: 0; max-width: none; border-radius: 0;
+    padding: 0.85rem 1rem;
+  }
+  .cookie-banner-text { font-size: 0.82rem; line-height: 1.4; margin-bottom: 0.65rem; }
+  .cookie-banner-actions { gap: 0.5rem; }
+  .cookie-banner .btn { min-height: 44px; padding: 0.5rem 1.1rem; font-size: 0.82rem; }
 
   .menu-row {
     flex-wrap: wrap;

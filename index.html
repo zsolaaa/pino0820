@@ -9,6 +9,91 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Big+Shoulders+Text:wght@500;600;700&family=Literata:ital,opsz,wght@0,18..144,400;0,18..144,500;0,18..144,600;0,18..144,700;1,18..144,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "Pinocchio Pizza & Pasta",
+  "image": "https://zsolaaa.github.io/pino0820/images/hero-pizza.jpg",
+  "url": "https://zsolaaa.github.io/pino0820/",
+  "telephone": "+36307556846",
+  "priceRange": "2500-4500 Ft",
+  "servesCuisine": ["Pizza", "Olasz konyha", "Tészta"],
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "Tóth Kálmán tér 5.",
+    "addressLocality": "Baja",
+    "postalCode": "6500",
+    "addressCountry": "HU"
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "opens": "11:00",
+    "closes": "22:00"
+  },
+  "hasMenu": "https://zsolaaa.github.io/pino0820/etlap.html",
+  "acceptsReservations": "False"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Hogyan tudok rendelni vagy asztalt foglalni?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Jelenleg csak telefonon: hívj minket a +36 30 755 6846-os számon. Online rendelés vagy foglalás egyelőre nincs." }
+    },
+    {
+      "@type": "Question",
+      "name": "Milyen fogyasztási módok közül választhatok?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Helyben, elvitelre vagy házhoz szállítva is kérheted az ételt — mindhárom egyformán elérhető." }
+    },
+    {
+      "@type": "Question",
+      "name": "Van kiszállítás Baján kívül is?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Jelenleg csak Baján belül szállítunk ki." }
+    },
+    {
+      "@type": "Question",
+      "name": "Van parkolási lehetőség a közelben?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Igen, az utcán lehet parkolni, de a belváros egy része fizetős vagy korlátozott övezet." }
+    },
+    {
+      "@type": "Question",
+      "name": "Milyen fizetési módokat fogadtok el?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Készpénzt, bankkártyát és SZÉP-kártyát egyaránt elfogadunk." }
+    },
+    {
+      "@type": "Question",
+      "name": "Van minimum rendelési összeg vagy szállítási díj?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Nincs: sem minimum rendelési összeg, sem szállítási díj — a házhozszállítás díjmentes." }
+    },
+    {
+      "@type": "Question",
+      "name": "Milyen tésztát használtok a pizzákhoz?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Eredeti toszkán recept alapján, kézzel nyújtott, hosszan pihentetett, vékony, ropogós szélű tésztát sütünk." }
+    },
+    {
+      "@type": "Question",
+      "name": "Van csípős pizzátok vagy tésztátok?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Igen, több tételünk is „csípős” jelöléssel szerepel a menüben, például a Salame Piccante, az Ungherese vagy az Arrabbiata." }
+    },
+    {
+      "@type": "Question",
+      "name": "Cserélhető a tészta a paszta ételeknél?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Igen, a legtöbb paszta ételnél választhatsz tagliatelle, spagetti, gnocchi vagy penne közül." }
+    },
+    {
+      "@type": "Question",
+      "name": "Vannak gluténmentes vagy vegán opciók?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Jelenleg nincs külön gluténmentes vagy vegán változat a menüben." }
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <!--
@@ -70,9 +155,7 @@
         </div>
       </div>
       <div class="hero-media" data-reveal="scale">
-        <div class="hero-image ph-image" data-ph="hero-pizza.jpg" role="img" aria-label="Frissen sült, vékony tésztás Pinocchio pizza, nyúlós mozzarellával és bazsalikommal">
-          <span class="ph-label">Kép: hero-pizza.jpg</span>
-        </div>
+        <img class="hero-image" src="images/hero-pizza.jpg" width="1856" height="2304" fetchpriority="high" alt="Frissen sült, vékony tésztás Pinocchio pizza, nyúlós mozzarellával és bazsalikommal">
       </div>
     </div>
     <div class="ticker" aria-hidden="true">
@@ -385,7 +468,7 @@
 </a>
 
 <div id="cookie-banner" class="cookie-banner" hidden role="dialog" aria-live="polite" aria-label="Süti-hozzájárulás">
-  <p class="cookie-banner-text">Az oldal látogatottságmérő sütiket használ (Google Analytics), hogy megértsük, hogyan használod az oldalt. Bővebben az <a href="adatkezelesi-tajekoztato.html">adatkezelési tájékoztatóban</a>.</p>
+  <p class="cookie-banner-text">Látogatottságmérő sütiket használunk (Google Analytics). <a href="adatkezelesi-tajekoztato.html">Adatkezelési tájékoztató</a></p>
   <div class="cookie-banner-actions">
     <button type="button" id="cookie-reject" class="btn btn-ghost">Elutasítom</button>
     <button type="button" id="cookie-accept" class="btn btn-primary">Elfogadom</button>

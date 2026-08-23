@@ -33,12 +33,9 @@ function loadPhImage(el) {
 
 const phEls = document.querySelectorAll(".ph-image[data-ph]");
 
-// Hero image is above the fold: load it immediately for the best LCP.
-const eagerEl = document.querySelector(".hero-image.ph-image[data-ph]");
-if (eagerEl) loadPhImage(eagerEl);
-
-// Everything else loads only as it approaches the viewport.
-const lazyEls = Array.from(phEls).filter((el) => el !== eagerEl);
+// The hero photo is now a native <img> loaded by the browser; everything
+// else here is below the fold and loads only as it approaches the viewport.
+const lazyEls = Array.from(phEls);
 if ("IntersectionObserver" in window && lazyEls.length) {
   const imageObserver = new IntersectionObserver(
     (entries) => {
