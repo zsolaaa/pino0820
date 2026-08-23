@@ -525,6 +525,46 @@ p { margin: 0; }
   max-width: 50ch;
 }
 
+/* ============ Grant / támogatás oldal ============ */
+.grant { padding: 0 0 clamp(4rem, 8vw, 7rem); }
+.grant-card {
+  max-width: 48rem;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.75rem, 3.5vw, 2.5rem);
+}
+.grant-field {
+  border-left: 2px solid var(--ink);
+  padding-left: 1.25rem;
+}
+.grant-label {
+  font-family: var(--label);
+  font-weight: 700;
+  font-size: 1.05rem;
+  margin-bottom: 0.4rem;
+}
+.grant-value {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-on-cream-soft);
+  max-width: 68ch;
+}
+.grant-value + .grant-value { margin-top: 0.9rem; }
+.grant-notice {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-on-cream);
+  background: var(--paper);
+  border: 1px solid rgba(28,20,14,0.18);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.75rem;
+  margin: clamp(2.5rem, 5vw, 3.5rem) 0 0;
+  max-width: 48rem;
+}
+.grant-notice strong { font-weight: 700; }
+
 /* ============ Menu jump nav ============ */
 .menu-jumpnav {
   position: sticky;
@@ -926,6 +966,25 @@ p { margin: 0; }
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+.footer-bottom a { text-decoration: underline; text-underline-offset: 2px; }
+.footer-bottom a:hover { color: var(--text-on-ink); }
+
+/* ============ Grant badge (fixed, always visible) ============ */
+.grant-badge {
+  position: fixed;
+  left: 1rem;
+  bottom: 1rem;
+  z-index: 60;
+  display: block;
+  width: clamp(200px, 24vw, 320px);
+  line-height: 0;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 6px 20px -6px rgba(28,20,14,0.4);
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+.grant-badge:hover { transform: translateY(-3px); box-shadow: 0 10px 26px -8px rgba(28,20,14,0.45); }
+.grant-badge img { display: block; width: 100%; height: auto; border-radius: var(--radius); }
 
 /* ============ Reveal on scroll ============ */
 [data-reveal] {
@@ -971,6 +1030,7 @@ p { margin: 0; }
   .header-inner { gap: 0.75rem; }
   .btn-call span.label-full { display: none; }
   .hero-actions .btn { width: 100%; justify-content: center; }
+  .grant-badge { left: 0.6rem; top: calc(var(--header-h) + 0.6rem); bottom: auto; width: 170px; }
 
   .menu-row {
     flex-wrap: wrap;
