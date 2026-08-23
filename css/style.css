@@ -565,6 +565,110 @@ p { margin: 0; }
 }
 .grant-notice strong { font-weight: 700; }
 
+/* ============ Legal / adatkezelés oldal ============ */
+.legal { padding: 0 0 clamp(4rem, 8vw, 7rem); }
+.legal-card {
+  max-width: 48rem;
+  margin: 0 auto;
+  background: var(--paper);
+  border: 1px solid rgba(28,20,14,0.12);
+  border-radius: var(--radius);
+  padding: clamp(2rem, 5vw, 3rem);
+}
+.legal-intro {
+  font-family: var(--serif);
+  font-size: 1.05rem;
+  line-height: 1.75;
+  color: var(--text-on-cream);
+  max-width: 68ch;
+  margin: 0 0 clamp(2rem, 4vw, 2.5rem);
+  padding-bottom: clamp(2rem, 4vw, 2.5rem);
+  border-bottom: 1px solid rgba(28,20,14,0.12);
+}
+.legal-section { margin-bottom: clamp(2.25rem, 4vw, 3rem); }
+.legal-section:last-child { margin-bottom: 0; }
+.legal-h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: clamp(1.35rem, 2.5vw, 1.65rem);
+  margin: 0 0 1.1rem;
+}
+.legal-num { font-family: var(--display); font-weight: 900; color: var(--red); }
+.legal-section p {
+  font-family: var(--serif);
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-on-cream);
+  max-width: 68ch;
+  margin: 0 0 1rem;
+}
+.legal-section p:last-child { margin-bottom: 0; }
+.legal-section p a { color: var(--text-on-cream); text-decoration: underline; text-decoration-color: var(--red); text-underline-offset: 3px; }
+.legal-section p.legal-subhead {
+  font-family: var(--label);
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--red);
+  margin-bottom: 0.6rem;
+}
+.legal-section ul {
+  font-family: var(--serif);
+  color: var(--text-on-cream);
+  line-height: 1.7;
+  max-width: 68ch;
+  margin: 0 0 1rem;
+  padding-left: 1.25rem;
+}
+.legal-section li { margin-bottom: 0.5rem; }
+.legal-section li::marker { color: var(--red); }
+.legal-section li strong { font-family: var(--label); font-weight: 700; }
+.legal-def { margin: 1.1rem 0 1.25rem; }
+.legal-def-row {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 0.75rem;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid rgba(28,20,14,0.1);
+}
+.legal-def-row:first-child { padding-top: 0; }
+.legal-def-row:last-child { border-bottom: none; padding-bottom: 0; }
+.legal-def-row dt {
+  font-family: var(--label);
+  font-weight: 700;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-on-cream-soft);
+  margin: 0;
+}
+.legal-def-row dd {
+  font-family: var(--serif);
+  font-size: 0.98rem;
+  color: var(--text-on-cream);
+  margin: 0;
+}
+.legal-def-row dd a { color: var(--text-on-cream); text-decoration: underline; text-decoration-color: var(--red); text-underline-offset: 3px; }
+.legal-note {
+  background: var(--cream-deep);
+  border: 1px solid rgba(28,20,14,0.15);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0 0;
+}
+.legal-note p.legal-note-label {
+  font-family: var(--label);
+  font-weight: 700;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--red);
+  margin-bottom: 0.5rem;
+}
+.legal-note p { font-size: 0.92rem; color: var(--text-on-cream-soft); }
+
 /* ============ Menu jump nav ============ */
 .menu-jumpnav {
   position: sticky;
@@ -896,22 +1000,32 @@ p { margin: 0; }
   border-radius: var(--radius);
   padding: 1.75rem 2rem;
 }
-.cta-flow {
-  font-family: var(--serif);
-  font-size: 1.05rem;
-  line-height: 1.85;
-  color: var(--text-on-cream);
+.cta-rows { display: flex; flex-direction: column; }
+.cta-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid rgba(28,20,14,0.1);
 }
-.cta-flow strong {
+.cta-row:first-child { padding-top: 0; }
+.cta-row:last-child { border-bottom: none; }
+.cta-row .icon { color: var(--red); margin-top: 0.15rem; }
+.cta-row-body { display: flex; flex-direction: column; gap: 0.2rem; }
+.cta-row-label {
   font-family: var(--label);
   font-weight: 700;
-  color: var(--red);
-  font-style: normal;
+  font-size: 0.7rem;
   text-transform: uppercase;
-  font-size: 0.82em;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.06em;
+  color: var(--text-on-cream-soft);
 }
-.cta-flow a { color: var(--text-on-cream); text-decoration: underline; text-decoration-color: var(--red); text-underline-offset: 3px; }
+.cta-row-value {
+  font-family: var(--serif);
+  font-size: 1.02rem;
+  color: var(--text-on-cream);
+}
+.cta-row-value a { color: var(--text-on-cream); text-decoration: underline; text-decoration-color: var(--red); text-underline-offset: 3px; }
 .cta-buttons {
   display: flex;
   flex-wrap: wrap;
@@ -1031,6 +1145,7 @@ p { margin: 0; }
   .btn-call span.label-full { display: none; }
   .hero-actions .btn { width: 100%; justify-content: center; }
   .grant-badge { left: 0.6rem; top: calc(var(--header-h) + 0.6rem); bottom: auto; width: 170px; }
+  .legal-def-row { grid-template-columns: 1fr; gap: 0.2rem; }
 
   .menu-row {
     flex-wrap: wrap;
