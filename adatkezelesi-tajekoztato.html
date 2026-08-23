@@ -84,15 +84,25 @@
           </ul>
 
           <p class="legal-subhead">Weboldal-látogatás (technikai naplózás)</p>
-          <p>A weboldal jelenleg nem használ látogatottságmérő, hirdetési vagy egyéb célú sütit (cookie-t), és nem kér tőled semmilyen adatot regisztráció vagy űrlap kitöltése útján. A tárhelyet biztosító szolgáltató a szerver üzemeltetése és biztonsága érdekében automatikusan naplózhatja a látogatás technikai adatait (pl. IP-cím, időpont, böngésző típusa).</p>
+          <p>Nem kérünk tőled semmilyen adatot regisztráció vagy űrlap kitöltése útján. A tárhelyet biztosító szolgáltató a szerver üzemeltetése és biztonsága érdekében automatikusan naplózhatja a látogatás technikai adatait (pl. IP-cím, időpont, böngésző típusa).</p>
           <ul>
             <li><strong>Jogalap:</strong> az Adatkezelő és a tárhelyszolgáltató jogos érdeke a szolgáltatás biztonságos üzemeltetéséhez (GDPR 6. cikk (1) bek. f) pont).</li>
             <li><strong>Megőrzési idő:</strong> a tárhelyszolgáltató mindenkori naplózási szabályzata szerint, jellemzően néhány hét-hónap.</li>
           </ul>
 
+          <p class="legal-subhead">Látogatottságmérés (Google Analytics)</p>
+          <p>A weboldal a Google Analytics (GA4) szolgáltatást használja annak megismerésére, hogyan használják a látogatók az oldalt (pl. mely oldalakat nézik meg, milyen eszközről érkeznek). Ez a mérés <strong>csak akkor indul el</strong>, ha az oldal alján megjelenő süti-elfogadó sávon kifejezetten hozzájárulsz — elutasítás esetén a mérés nem fut, és a döntésedet bármikor módosíthatod a lábléc "Süti-beállítások" linkjén.</p>
+          <ul>
+            <li><strong>Kezelt adatok:</strong> anonimizált látogatási statisztikák (pl. meglátogatott oldalak, tartózkodási idő, eszköz- és böngészőtípus, hozzávetőleges földrajzi terület); a Google Analytics nem gyűjt névvel, e-mail címmel vagy telefonszámmal közvetlenül azonosítható adatot.</li>
+            <li><strong>Sütik:</strong> a Google Analytics jellemzően <code>_ga</code> és <code>_ga_*</code> nevű sütiket helyez el a böngésződben.</li>
+            <li><strong>Jogalap:</strong> az érintett hozzájárulása (GDPR 6. cikk (1) bek. a) pont).</li>
+            <li><strong>Megőrzési idő:</strong> a Google Analytics alapértelmezett adatmegőrzési beállítása szerint, jellemzően 14 hónap.</li>
+            <li><strong>Adatkezelő (harmadik fél):</strong> Google Ireland Limited; bővebben a <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google adatvédelmi tájékoztatójában</a>.</li>
+          </ul>
+
           <div class="legal-note">
             <p class="legal-note-label">Megjegyzés</p>
-            <p>Ha a jövőben látogatottságmérő (pl. Google Analytics), hirdetési (pl. Facebook Pixel) vagy chat-widget kódot építünk be az oldalba, ezt a tájékoztatót ki kell egészíteni, és a látogatóknak süti-elfogadó sávon (cookie banner) keresztül előzetesen hozzá kell járulniuk.</p>
+            <p>Ha a jövőben további hirdetési (pl. Facebook Pixel) vagy chat-widget kódot építünk be az oldalba, ezt a tájékoztatót ki kell egészíteni, és a látogatóknak a süti-elfogadó sávon keresztül előzetesen hozzá kell járulniuk ezekhez is.</p>
           </div>
         </div>
 
@@ -171,9 +181,17 @@
     </div>
   </div>
   <div class="wrap footer-bottom">
-    <p>&copy; 2026 Pinocchio Pizza &amp; Pasta · <a href="tamogatas.html">Támogatás</a> · <a href="adatkezelesi-tajekoztato.html">Adatkezelés</a></p>
+    <p>&copy; 2026 Pinocchio Pizza &amp; Pasta · <a href="tamogatas.html">Támogatás</a> · <a href="adatkezelesi-tajekoztato.html">Adatkezelés</a> · <a href="#" id="cookie-settings-link">Süti-beállítások</a></p>
   </div>
 </footer>
+
+<div id="cookie-banner" class="cookie-banner" hidden role="dialog" aria-live="polite" aria-label="Süti-hozzájárulás">
+  <p class="cookie-banner-text">Az oldal látogatottságmérő sütiket használ (Google Analytics), hogy megértsük, hogyan használod az oldalt. Bővebben az <a href="adatkezelesi-tajekoztato.html">adatkezelési tájékoztatóban</a>.</p>
+  <div class="cookie-banner-actions">
+    <button type="button" id="cookie-reject" class="btn btn-ghost">Elutasítom</button>
+    <button type="button" id="cookie-accept" class="btn btn-primary">Elfogadom</button>
+  </div>
+</div>
 
 <script src="js/main.js"></script>
 </body>

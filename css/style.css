@@ -1100,6 +1100,35 @@ p { margin: 0; }
 .grant-badge:hover { transform: translateY(-3px); box-shadow: 0 10px 26px -8px rgba(28,20,14,0.45); }
 .grant-badge img { display: block; width: 100%; height: auto; border-radius: var(--radius); }
 
+/* ============ Cookie consent banner ============ */
+.cookie-banner {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 150;
+  max-width: 380px;
+  background: var(--ink);
+  color: var(--text-on-ink);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 10px 30px -10px rgba(0,0,0,0.45);
+}
+.cookie-banner[hidden] { display: none; }
+.cookie-banner-text {
+  font-family: var(--serif);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--text-on-ink-soft);
+  margin: 0 0 1rem;
+}
+.cookie-banner-text a { color: var(--text-on-ink); text-decoration: underline; text-decoration-color: var(--marigold); text-underline-offset: 3px; }
+.cookie-banner-actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+.cookie-banner .btn-ghost {
+  color: var(--text-on-ink);
+  border-color: var(--text-on-ink-soft);
+}
+.cookie-banner .btn-ghost:hover { background: var(--cream); color: var(--ink); border-color: var(--cream); }
+
 /* ============ Reveal on scroll ============ */
 [data-reveal] {
   opacity: 0;
@@ -1146,6 +1175,7 @@ p { margin: 0; }
   .hero-actions .btn { width: 100%; justify-content: center; }
   .grant-badge { left: 0.6rem; top: calc(var(--header-h) + 0.6rem); bottom: auto; width: 170px; }
   .legal-def-row { grid-template-columns: 1fr; gap: 0.2rem; }
+  .cookie-banner { left: 0; right: 0; bottom: 0; max-width: none; border-radius: 0; }
 
   .menu-row {
     flex-wrap: wrap;
