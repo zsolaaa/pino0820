@@ -17,7 +17,7 @@ if (navToggle && mobileNav) {
 }
 
 // Fill placeholder image blocks with real photos when present in images/
-document.querySelectorAll(".ph-image[data-ph]").forEach((el) => {
+function loadPhImage(el) {
   const filename = el.getAttribute("data-ph");
   const img = new Image();
   img.onload = () => {
@@ -29,7 +29,32 @@ document.querySelectorAll(".ph-image[data-ph]").forEach((el) => {
     if (label) label.remove();
   };
   img.src = `images/${filename}`;
-});
+}
+
+const phEls = document.querySelectorAll(".ph-image[data-ph]");
+
+// Hero image is above the fold: load it immediately for the best LCP.
+const eagerEl = document.querySelector(".hero-image.ph-image[data-ph]");
+if (eagerEl) loadPhImage(eagerEl);
+
+// Everything else loads only as it approaches the viewport.
+const lazyEls = Array.from(phEls).filter((el) => el !== eagerEl);
+if ("IntersectionObserver" in window && lazyEls.length) {
+  const imageObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          loadPhImage(entry.target);
+          imageObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { rootMargin: "600px 0px" }
+  );
+  lazyEls.forEach((el) => imageObserver.observe(el));
+} else {
+  lazyEls.forEach(loadPhImage);
+}
 
 // Scroll reveal
 const revealEls = document.querySelectorAll("[data-reveal]");

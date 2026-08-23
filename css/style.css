@@ -215,11 +215,15 @@ p { margin: 0; }
 .nav-toggle {
   display: none;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 5px;
+  width: 44px;
+  height: 44px;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.4rem;
+  padding: 0;
 }
 .nav-toggle span { width: 22px; height: 2px; background: var(--ink); }
 
@@ -464,6 +468,30 @@ p { margin: 0; }
   }
 }
 
+.menu-preview { background: var(--cream); padding: clamp(4rem, 8vw, 7rem) 0; }
+.menu-preview .section-title { color: var(--green); }
+.menu-preview-card {
+  background: var(--paper);
+  border: 1px solid rgba(28,20,14,0.12);
+  border-top: 4px solid var(--green);
+  border-radius: var(--radius);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.5rem, 4vw, 2.5rem);
+  margin-top: clamp(2rem, 4vw, 3rem);
+}
+.menu-preview-card .menu-columns { margin-bottom: 0; }
+.menu-preview-card .menu-list li { border-bottom: 1px dotted rgba(28,20,14,0.15); }
+.menu-preview-card .menu-list li:first-child { padding-top: 0; }
+.menu-preview-card .menu-row h4 { color: var(--text-on-cream); }
+.menu-preview-card .menu-row .dots { border-bottom: 1px dotted rgba(28,20,14,0.2); }
+.menu-preview-card .menu-row .price { color: var(--text-on-cream); }
+.menu-preview-card .menu-list p { color: var(--text-on-cream-soft); }
+.menu-preview-card .menu-row h4 em {
+  color: var(--text-on-marigold);
+  background: var(--marigold);
+  border-color: var(--marigold-deep);
+}
 .menu-preview-more {
   text-align: center;
   margin-top: clamp(2.5rem, 5vw, 3.5rem);
@@ -700,7 +728,8 @@ p { margin: 0; }
   color: var(--text-on-ink-soft);
   font-size: 0.98rem;
 }
-.process-cta {
+.process-cta,
+.faq-cta {
   margin-top: clamp(2.5rem, 5vw, 3.5rem);
   text-align: center;
 }
@@ -723,17 +752,25 @@ p { margin: 0; }
 
 /* ============ FAQ ============ */
 .faq {
-  background: var(--marigold);
-  color: var(--text-on-marigold);
-  padding: clamp(3.5rem, 7vw, 6rem) 0;
+  background: var(--cream);
+  padding: clamp(4rem, 8vw, 7rem) 0;
 }
-.faq .section-title { color: var(--text-on-marigold); }
+.faq .section-title { color: var(--marigold-deep); }
+.faq-card {
+  background: var(--paper);
+  border: 1px solid rgba(28,20,14,0.12);
+  border-top: 4px solid var(--marigold);
+  border-radius: var(--radius);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  padding: clamp(1.75rem, 4vw, 2.75rem) clamp(1.5rem, 4vw, 2.5rem);
+  margin: clamp(2rem, 4vw, 3rem) auto 0;
+  max-width: 74rem;
+}
 .faq-columns {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: clamp(2rem, 5vw, 4.5rem);
-  max-width: 74rem;
-  margin: clamp(2.25rem, 5vw, 3.5rem) auto 0;
+  gap: clamp(2rem, 5vw, 4rem);
 }
 .faq-group-title {
   font-family: var(--label);
@@ -741,15 +778,15 @@ p { margin: 0; }
   font-size: 0.82rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--text-on-marigold);
+  color: var(--text-on-cream-soft);
   border-bottom: 2px solid var(--red);
   padding-bottom: 0.9rem;
   margin-bottom: 0.25rem;
 }
 .faq-item {
-  border-bottom: 1px solid rgba(36,18,5,0.25);
+  border-bottom: 1px solid rgba(28,20,14,0.12);
 }
-.faq-item:first-child { border-top: 1px solid rgba(36,18,5,0.25); }
+.faq-item:first-child { border-top: 1px solid rgba(28,20,14,0.12); }
 .faq-item summary {
   display: flex;
   align-items: center;
@@ -759,6 +796,7 @@ p { margin: 0; }
   font-family: var(--label);
   font-weight: 700;
   font-size: 1.02rem;
+  color: var(--text-on-cream);
   cursor: pointer;
   list-style: none;
 }
@@ -774,7 +812,7 @@ p { margin: 0; }
 .faq-icon::after {
   content: "";
   position: absolute;
-  background: var(--text-on-marigold);
+  background: var(--text-on-cream);
   transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
 }
 .faq-icon::before { top: 50%; left: 0; width: 100%; height: 2px; transform: translateY(-50%); }
@@ -784,15 +822,11 @@ p { margin: 0; }
   font-family: var(--serif);
   font-size: 1rem;
   line-height: 1.6;
-  color: rgba(36,18,5,0.85);
+  color: var(--text-on-cream-soft);
   max-width: 62ch;
   padding: 0 0.1rem 1.4rem;
 }
-.faq-a a { color: rgba(36,18,5,0.85); text-decoration: underline; text-underline-offset: 3px; }
-.usp-cta {
-  margin-top: clamp(2.5rem, 5vw, 3.5rem);
-  text-align: center;
-}
+.faq-a a { color: var(--text-on-cream-soft); text-decoration: underline; text-underline-offset: 3px; }
 
 /* ============ CTA ============ */
 .cta {

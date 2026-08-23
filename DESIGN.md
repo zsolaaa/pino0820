@@ -4,7 +4,7 @@
 
 ## World
 
-Bold, condensed poster typography over full-bleed color-block sections, reskinned from the user's pinned reference image ("TONDO"-style pizzeria landing page) with Pinocchio Pizza & Pasta's own content, palette, and menu. Warm cream base punctuated by committed color bands per section (forest green for the menu, near-black for process, marigold for USPs, brick red for hero accents and the closing CTA).
+Bold, condensed poster typography, reskinned from the user's pinned reference image ("TONDO"-style pizzeria landing page) with Pinocchio Pizza & Pasta's own content, palette, and menu. Warm cream is the base for nearly every section; only two full-bleed color bands remain (near-black for the process section and footer, brick red for the closing CTA) — reduced from an earlier version with 5 full-bleed bands after user feedback that alternating saturated section backgrounds while scrolling read as "stacked banners" rather than a coherent page. Forest green and marigold, previously full-section backgrounds (menu preview, FAQ), now live as accent borders/badges on cream cards instead.
 
 ## Color
 
@@ -13,8 +13,8 @@ Full-palette strategy, 4 named roles plus the cream/paper base:
 - `--cream` `#F6EFE2` / `--paper` `#FBF7EE` — base ground, review cards, story/ingredients/gallery sections
 - `--ink` `#1C140E` / `--ink-soft` `#2A1F16` — header ticker, process section, footer
 - `--red` `#C4291E` / `--red-deep` `#9C1F17` — primary accent, CTA buttons, review avatar circles, closing CTA band
-- `--green` `#1F5C3D` / `--green-deep` `#163F2A` — full menu section
-- `--marigold` `#F0B32B` — FAQ band, accent highlights (ticker odd words, "csípős" tags, price tags on dark)
+- `--green` `#1F5C3D` / `--green-deep` `#163F2A` — full-bleed on the real menu page (`etlap.html`) only; on `index.html` it's a top-border accent on the cream menu-preview card
+- `--marigold` `#F0B32B` — accent only: top-border on the cream FAQ card, ticker odd words, "csípős" tags, price tags on dark surfaces (never a full-bleed section background)
 
 Secondary text on colored surfaces is tinted from that surface's hue family (e.g. `--text-on-green-soft`), never plain gray. `--text-on-green-soft` was lightened from `#A9C4AF` to `#B3CDBA` (WCAG AA fix from the /impeccable critique run — was ~4.2:1, now ~4.65:1 against `--green`).
 
@@ -33,7 +33,8 @@ Secondary text on colored surfaces is tinted from that surface's hue family (e.g
 - **Menu subcategories**: `.menu-subcat`, a small marigold label grouping items within one `.menu-cat` (used to split "Extra feltétek" into Sajtok / Húsok / Zöldségek) — not a decorative kicker, it carries real grouping information.
 - **Ticker**: infinite horizontal marquee strip, ink background, marigold accent on alternating words.
 - **Placeholder images**: `.ph-image`, diagonal-stripe pattern with a labeled tag naming the expected filename (see `IMAGE_PROMPTS.md`); replaced automatically once a real file lands at that path.
-- **FAQ accordion**: `.faq-item` (native `<details>`/`<summary>`), marigold band, plus/minus icon built from two CSS pseudo-elements that rotate on `[open]`. Copy grounded in confirmed product facts (hours, address, phone-only ordering, delivery, payment methods, dough, spice tags, pasta substitution) plus owner-confirmed answers on parking, payment methods, dietary options, and delivery minimum/fee — no fabricated claims.
+- **FAQ accordion**: `.faq-item` (native `<details>`/`<summary>`) inside `.faq-card`, a paper card with a marigold top-border on cream, grouped into two labeled columns (`.faq-group-title`: Rendelés & szállítás / Étel & étrend). Plus/minus icon built from two CSS pseudo-elements that rotate on `[open]`. Copy grounded in confirmed product facts (hours, address, phone-only ordering, delivery, payment methods, dough, spice tags, pasta substitution) plus owner-confirmed answers on parking, payment methods, dietary options, and delivery minimum/fee — no fabricated claims.
+- **Menu preview card**: `.menu-preview-card`, the same paper-card-on-cream pattern as the FAQ card, with a green top-border instead of marigold — reuses the real menu's `.menu-row`/`.menu-list` markup but with cream-context text colors instead of the green page's light-on-dark palette.
 
 ## Responsive rules
 
@@ -50,4 +51,5 @@ Single breakpoint at 980px collapses nav to a hamburger/full-screen list, stacks
 - `story-oven.jpg` is temporarily a duplicate of the bar-counter photo used for `gallery-2.jpg` (5 pizzas lined up), reused as a stopgap after the /impeccable critique run flagged the section shipping a broken placeholder. Replace with a dedicated kitchen/founders photo per the prompt in `IMAGE_PROMPTS.md` when one is available.
 - The owner's supplied photos also included a pizza box bearing a real hand-drawn **Pinocchio mascot logo** (green/red cartoon boy with a pizza), not currently used anywhere on the page since no logo asset was scoped into this build — worth a follow-up to incorporate as an actual brand mark instead of the current wordmark-only header/footer.
 - No online ordering/reservation system is wired up — CTAs route to `tel:` and a Google Maps search link only, per confirmed product scope.
+- `/impeccable audit` (2026-08-23) found and fixed: nav-toggle touch target under 44px, the FAQ section missing from all nav (header/mobile/footer, both pages), all `.ph-image` photos loading eagerly regardless of viewport position, a stale `.usp-cta` class name left over from the pre-FAQ "Miért Pinocchio?" band, and the mechanical detector's `border-accent-on-rounded` flag on `.faq-card`/`.menu-preview-card` (squared off the top corners under the accent border so it no longer fights the card's rounded shape).
 - This DESIGN.md was authored in-thread rather than by the dedicated documenter subagent, and the finish check was a self-review (screenshot pass + the mechanical `detect.mjs` scan) rather than the full multi-agent finish-reviewer pipeline, since the visual direction was pinned directly by the user's reference image and the build stayed code-led (no image generation available in this session). Disclosed per the skill's substitution rule.
