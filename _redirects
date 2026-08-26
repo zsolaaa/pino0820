@@ -1,0 +1,19 @@
+# Redirects from the old Wix site's URL structure to the new site, so
+# previously indexed/linked pages don't 404 after the domain cutover.
+# Cloudflare Pages _redirects syntax: source destination status_code
+
+/galéria             /index.html#gallery   301
+/gal%C3%A9ria         /index.html#gallery   301
+/galéria/            /index.html#gallery   301
+/gal%C3%A9ria/        /index.html#gallery   301
+
+/rolunk               /index.html#story     301
+/rolunk/              /index.html#story     301
+
+/kapcsolat            /index.html#contact   301
+/kapcsolat/           /index.html#contact   301
+
+/támogatás            /tamogatas.html       301
+/t%C3%A1mogat%C3%A1s   /tamogatas.html       301
+/támogatás/           /tamogatas.html       301
+/t%C3%A1mogat%C3%A1s/  /tamogatas.html       301
