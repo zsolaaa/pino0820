@@ -24,6 +24,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Big+Shoulders+Text:wght@500;600;700&family=Literata:ital,opsz,wght@0,18..144,400;0,18..144,500;0,18..144,600;0,18..144,700;1,18..144,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<link rel="preload" as="image" href="images/hero-pizza.avif" type="image/avif" fetchpriority="high">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -201,7 +202,10 @@
         </div>
       </div>
       <div class="hero-media" data-reveal="scale">
-        <img class="hero-image" src="images/hero-pizza.jpg" width="1856" height="2304" fetchpriority="high" alt="Frissen sült, vékony tésztás Pinocchio pizza, nyúlós mozzarellával és bazsalikommal">
+        <picture>
+          <source srcset="images/hero-pizza.avif" type="image/avif">
+          <img class="hero-image" src="images/hero-pizza.jpg" width="1856" height="2304" fetchpriority="high" alt="Frissen sült, vékony tésztás Pinocchio pizza, nyúlós mozzarellával és bazsalikommal">
+        </picture>
       </div>
     </div>
     <div class="ticker" aria-hidden="true">
@@ -297,7 +301,7 @@
   <section class="story" id="story">
     <div class="wrap story-grid">
       <div class="story-media" data-reveal="scale">
-        <div class="ph-image story-image" data-ph="story-oven.jpg" role="img" aria-label="Frissen sült pizzák a Pinocchio pultján, a konyhából"><span class="ph-label">Kép: story-oven.jpg</span></div>
+        <img class="story-image" src="images/story-oven.jpg" loading="lazy" decoding="async" alt="Frissen sült pizzák a Pinocchio pultján, a konyhából">
       </div>
       <div class="story-copy" data-reveal="up">
         <h2>Fiatalok, egy komoly recepttel</h2>
@@ -312,23 +316,23 @@
       <h2 class="section-title center">Öt hozzávaló, ami számít</h2>
       <div class="ingredient-row">
         <div class="ingredient">
-          <div class="ph-image ingredient-image" data-ph="ingredient-tomato.jpg" aria-hidden="true"></div>
+          <img class="ingredient-image" src="images/ingredient-tomato.jpg" loading="lazy" decoding="async" alt="Paradicsomszósz">
           <p>Paradicsomszósz</p>
         </div>
         <div class="ingredient">
-          <div class="ph-image ingredient-image" data-ph="ingredient-mozzarella.jpg" aria-hidden="true"></div>
+          <img class="ingredient-image" src="images/ingredient-mozzarella.jpg" loading="lazy" decoding="async" alt="Mozzarella">
           <p>Mozzarella</p>
         </div>
         <div class="ingredient">
-          <div class="ph-image ingredient-image" data-ph="ingredient-basil.jpg" aria-hidden="true"></div>
+          <img class="ingredient-image" src="images/ingredient-basil.jpg" loading="lazy" decoding="async" alt="Friss bazsalikom">
           <p>Friss bazsalikom</p>
         </div>
         <div class="ingredient">
-          <div class="ph-image ingredient-image" data-ph="ingredient-oliveoil.jpg" aria-hidden="true"></div>
+          <img class="ingredient-image" src="images/ingredient-oliveoil.jpg" loading="lazy" decoding="async" alt="Olívaolaj">
           <p>Olívaolaj</p>
         </div>
         <div class="ingredient">
-          <div class="ph-image ingredient-image" data-ph="ingredient-flour.jpg" aria-hidden="true"></div>
+          <img class="ingredient-image" src="images/ingredient-flour.jpg" loading="lazy" decoding="async" alt="Finom liszt">
           <p>Finom liszt</p>
         </div>
       </div>
@@ -365,12 +369,12 @@
     <div class="wrap">
       <h2 class="section-title center">Egyenesen a konyhából</h2>
       <div class="gallery-grid">
-        <div class="ph-image gallery-image g1" data-ph="gallery-1.jpg" role="img" aria-label="Sonkás pizza közelről, terasz és kék ég a háttérben"></div>
-        <div class="ph-image gallery-image g2" data-ph="gallery-2.jpg" data-ph-pos="50% 74%" role="img" aria-label="Öt frissen sült pizza a Pinocchio pultján"></div>
-        <div class="ph-image gallery-image g3" data-ph="gallery-3.jpg" role="img" aria-label="Villára tekert, paradicsomszószos spagetti közelről"></div>
-        <div class="ph-image gallery-image g4" data-ph="gallery-4.jpg" data-ph-pos="50% 68%" role="img" aria-label="Margherita pizza és két tányér pasta az asztalon"></div>
-        <div class="ph-image gallery-image g5" data-ph="gallery-5.jpg" data-ph-pos="50% 90%" role="img" aria-label="Csípős paradicsomos pasta közelről, háttérben a bajai utcakép"></div>
-        <div class="ph-image gallery-image g6" data-ph="gallery-6.jpg" data-ph-pos="50% 88%" role="img" aria-label="Rukkolás, olívabogyós tagliatelle a teraszon"></div>
+        <img class="gallery-image g1" src="images/gallery-1.jpg" loading="lazy" decoding="async" alt="Sonkás pizza közelről, terasz és kék ég a háttérben">
+        <img class="gallery-image g2" src="images/gallery-2.jpg" loading="lazy" decoding="async" style="object-position: 50% 74%" alt="Öt frissen sült pizza a Pinocchio pultján">
+        <img class="gallery-image g3" src="images/gallery-3.jpg" loading="lazy" decoding="async" alt="Villára tekert, paradicsomszószos spagetti közelről">
+        <img class="gallery-image g4" src="images/gallery-4.jpg" loading="lazy" decoding="async" style="object-position: 50% 68%" alt="Margherita pizza és két tányér pasta az asztalon">
+        <img class="gallery-image g5" src="images/gallery-5.jpg" loading="lazy" decoding="async" style="object-position: 50% 90%" alt="Csípős paradicsomos pasta közelről, háttérben a bajai utcakép">
+        <img class="gallery-image g6" src="images/gallery-6.jpg" loading="lazy" decoding="async" style="object-position: 50% 88%" alt="Rukkolás, olívabogyós tagliatelle a teraszon">
       </div>
     </div>
   </section>

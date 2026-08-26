@@ -16,43 +16,6 @@ if (navToggle && mobileNav) {
   });
 }
 
-// Fill placeholder image blocks with real photos when present in images/
-function loadPhImage(el) {
-  const filename = el.getAttribute("data-ph");
-  const img = new Image();
-  img.onload = () => {
-    el.style.backgroundImage = `url("images/${filename}")`;
-    el.style.backgroundSize = "cover";
-    el.style.backgroundPosition = el.getAttribute("data-ph-pos") || "center";
-    el.classList.add("has-image");
-    const label = el.querySelector(".ph-label");
-    if (label) label.remove();
-  };
-  img.src = `images/${filename}`;
-}
-
-const phEls = document.querySelectorAll(".ph-image[data-ph]");
-
-// The hero photo is now a native <img> loaded by the browser; everything
-// else here is below the fold and loads only as it approaches the viewport.
-const lazyEls = Array.from(phEls);
-if ("IntersectionObserver" in window && lazyEls.length) {
-  const imageObserver = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          loadPhImage(entry.target);
-          imageObserver.unobserve(entry.target);
-        }
-      });
-    },
-    { rootMargin: "600px 0px" }
-  );
-  lazyEls.forEach((el) => imageObserver.observe(el));
-} else {
-  lazyEls.forEach(loadPhImage);
-}
-
 // Cookie consent + Google Analytics (GA4)
 const GA_MEASUREMENT_ID = "G-GFPRWQK6D2";
 const CONSENT_KEY = "pinocchio-cookie-consent";
