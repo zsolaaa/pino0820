@@ -47,6 +47,7 @@ const statusFilter = document.getElementById("status-filter");
 const logoutBtn = document.getElementById("admin-logout");
 const soundToggle = document.getElementById("sound-toggle");
 const volumeSlider = document.getElementById("volume-slider");
+const testSoundBtn = document.getElementById("test-sound");
 
 const AUTO_REFRESH_MS = 20000;
 const SOUND_PREF_KEY = "pinocchio-admin-sound";
@@ -72,56 +73,86 @@ function setVolume(value) {
   localStorage.setItem(VOLUME_PREF_KEY, String(value));
 }
 
-// Loud, siren-style alarm via Web Audio API (square wave, alternating high/low
-// pitch, several pulses) — designed to cut through a noisy kitchen, unlike a
-// single soft beep. No audio file needed.
+// Browsers (Safari/iOS especially) only allow Web Audio to actually produce
+// sound if the AudioContext was created/resumed inside a real user gesture
+// (click/tap/keydown). Our alert fires from a setInterval callback, which has
+// no gesture — so we create ONE context up front and "unlock" it on the very
+// first tap anywhere on the page, then reuse + resume() it for every alert.
+let sharedAudioCtx = null;
+
+function getAudioContext() {
+  if (!sharedAudioCtx) {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor) return null;
+    sharedAudioCtx = new Ctor();
+  }
+  return sharedAudioCtx;
+}
+
+function unlockAudio() {
+  const ctx = getAudioContext();
+  if (ctx && ctx.state === "suspended") ctx.resume().catch(() => {});
+}
+["click", "touchstart", "keydown"].forEach((evt) =>
+  document.addEventListener(evt, unlockAudio, { passive: true })
+);
+
+function playTone(ctx, { delay, duration, frequency, peakGain }) {
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "square";
+  osc.frequency.value = frequency;
+  gain.gain.setValueAtTime(0.0001, ctx.currentTime + delay);
+  gain.gain.exponentialRampToValueAtTime(Math.max(peakGain, 0.0002), ctx.currentTime + delay + 0.015);
+  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + duration);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(ctx.currentTime + delay);
+  osc.stop(ctx.currentTime + delay + duration + 0.02);
+}
+
+function playAlarmPattern(volume) {
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const resumed = ctx.state === "suspended" ? ctx.resume().catch(() => {}) : Promise.resolve();
+
+  resumed.then(() => {
+    const pulseDuration = 0.16;
+    const frequencies = [1046, 784]; // alternating two-tone siren
+    for (let i = 0; i < 8; i++) {
+      playTone(ctx, {
+        delay: i * pulseDuration,
+        duration: pulseDuration,
+        frequency: frequencies[i % 2],
+        peakGain: 0.9 * volume,
+      });
+    }
+  });
+}
+
+// Loud, siren-style alarm (square wave, alternating high/low pitch, several
+// pulses) — designed to cut through a noisy kitchen, unlike a single soft beep.
 function playNewOrderSound() {
   if (!isSoundOn()) return;
   const volume = getVolume();
   if (volume <= 0) return;
-
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const peakGain = 0.9 * volume;
-    const pulseDuration = 0.16;
-    const frequencies = [1046, 784]; // alternating two-tone siren
-
-    for (let i = 0; i < 8; i++) {
-      const delay = i * pulseDuration;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = "square";
-      osc.frequency.value = frequencies[i % 2];
-      gain.gain.setValueAtTime(0.0001, ctx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(peakGain, ctx.currentTime + delay + 0.015);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + pulseDuration);
-      osc.connect(gain).connect(ctx.destination);
-      osc.start(ctx.currentTime + delay);
-      osc.stop(ctx.currentTime + delay + pulseDuration + 0.02);
-    }
-  } catch {
-    // Web Audio unsupported/blocked — silently skip, the visual highlight still shows.
-  }
+  playAlarmPattern(volume);
 }
 
-// Short single beep at the current volume, used to preview the slider.
+// Always plays, ignoring the mute toggle — lets staff confirm the device can
+// actually produce sound at all, independent of the alert on/off preference.
+function playTestSound() {
+  playAlarmPattern(Math.max(getVolume(), 0.5));
+}
+
+// Short single beep at the current volume, used to preview the slider and to
+// let staff manually confirm the alert is actually audible on their device.
 function playPreviewBeep() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = "square";
-    osc.frequency.value = 1046;
-    const peakGain = 0.9 * getVolume();
-    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(Math.max(peakGain, 0.0002), ctx.currentTime + 0.015);
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18);
-    osc.connect(gain).connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.2);
-  } catch {
-    // ignore
-  }
+  const ctx = getAudioContext();
+  if (!ctx) return;
+  const resumed = ctx.state === "suspended" ? ctx.resume().catch(() => {}) : Promise.resolve();
+  resumed.then(() => {
+    playTone(ctx, { delay: 0, duration: 0.18, frequency: 1046, peakGain: 0.9 * getVolume() });
+  });
 }
 
 async function loadOrders() {
@@ -240,6 +271,10 @@ if (ordersTableBody) {
     volumeSlider.value = String(Math.round(getVolume() * 100));
     volumeSlider.addEventListener("input", () => setVolume(volumeSlider.value));
     volumeSlider.addEventListener("change", () => playPreviewBeep());
+  }
+
+  if (testSoundBtn) {
+    testSoundBtn.addEventListener("click", () => playTestSound());
   }
 
   loadOrders();
