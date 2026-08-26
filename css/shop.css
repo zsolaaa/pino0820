@@ -15,6 +15,46 @@
   max-width: 46ch;
 }
 
+/* ============ Coming-soon banner ============ */
+.coming-soon-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.5rem;
+  background: var(--ink);
+  border-radius: var(--radius);
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  margin-top: 1.75rem;
+}
+.coming-soon-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--marigold);
+  color: var(--text-on-marigold);
+}
+.coming-soon-icon svg { width: 26px; height: 26px; }
+.coming-soon-body h2 {
+  font-size: clamp(1.5rem, 3.6vw, 2.1rem);
+  color: var(--text-on-ink);
+  margin-bottom: 0.6rem;
+}
+.coming-soon-body p {
+  font-family: var(--serif);
+  color: var(--text-on-ink-soft);
+  max-width: 48ch;
+}
+.coming-soon-cta { flex-shrink: 0; }
+
+@media (min-width: 720px) {
+  .coming-soon-banner { flex-direction: row; align-items: center; }
+  .coming-soon-cta { margin-left: auto; }
+}
+
 /* ============ Category tabs ============ */
 .category-tabs {
   display: flex;
