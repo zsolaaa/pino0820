@@ -1,3 +1,8 @@
+# Apex domain -> www, so pinocchiobaja.hu doesn't serve duplicate
+# content alongside www.pinocchiobaja.hu. Requires both hostnames to be
+# attached as custom domains on this Cloudflare Pages project.
+https://pinocchiobaja.hu/*   https://www.pinocchiobaja.hu/:splat   301!
+
 # Redirects from the old Wix site's URL structure to the new site, so
 # previously indexed/linked pages don't 404 after the domain cutover.
 # Cloudflare Pages _redirects syntax: source destination status_code
