@@ -47,14 +47,14 @@ Stílus minden képen: természetes fény, meleg tónusok (krém/borostyán hát
 
 ---
 
-## 5. Galéria (6 kép, vegyes pizza/paszta közeli felvételek)
+## 5. Galéria (6 kép, vegyes pizza/pasta közeli felvételek)
 
 - `images/gallery-1.jpg` — hero-szerű, nagyobb elem: közeli pizza szelet felemelve, sajthúzással.
 - `images/gallery-2.jpg` — tészta tál gőzölögve, parmezánnal megszórva.
 - `images/gallery-3.jpg` — pizza a kemencéből kivéve, lapáton.
 - `images/gallery-4.jpg` — közeli, csípős szalámis pizza szelet.
 - `images/gallery-5.jpg` — kéz tésztát nyújt, lisztes felület.
-- `images/gallery-6.jpg` — asztalon tálalt pizza + paszta együtt, felülnézetből.
+- `images/gallery-6.jpg` — asztalon tálalt pizza + pasta együtt, felülnézetből.
 
 Mindegyikhez általános prompt-váz:
 > [tartalom leírása fentről], authentic Italian trattoria food photography, warm natural light, shallow depth of field, rustic wooden or dark surface, appetizing, high detail.
