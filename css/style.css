@@ -133,6 +133,17 @@ p { margin: 0; }
   font-size: 0.85rem;
 }
 
+.header-phone {
+  font-family: var(--label);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--text-on-cream-soft);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.header-phone:hover { color: var(--red); text-decoration: underline; text-underline-offset: 3px; }
+
 .icon { width: 18px; height: 18px; flex-shrink: 0; }
 
 /* ============ Placeholder image blocks ============ */
@@ -1179,7 +1190,6 @@ p { margin: 0; }
 @media (max-width: 560px) {
   .ingredient-row { grid-template-columns: repeat(2, 1fr); }
   .header-inner { gap: 0.75rem; }
-  .btn-call span.label-full { display: none; }
   .btn-order { display: none; }
   .hero-image { aspect-ratio: 16 / 8; }
   .hero-lede { margin-top: 1rem; }
