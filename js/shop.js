@@ -113,12 +113,34 @@ function renderCard(product, modifierProducts) {
   if (canCustomize) {
     const toggle = document.createElement("button");
     toggle.type = "button";
-    toggle.className = "product-card-customize";
-    toggle.textContent = "+ Extra feltétek hozzáadása";
+    toggle.className = "modifier-toggle";
+    toggle.innerHTML = `
+      <span class="modifier-toggle-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      <span class="modifier-toggle-label">Extra feltétek hozzáadása</span>
+      <span class="modifier-toggle-count" hidden></span>
+    `;
+    const countEl = toggle.querySelector(".modifier-toggle-count");
+    const labelEl = toggle.querySelector(".modifier-toggle-label");
+
     modifierPanel = buildModifierPanel(product, modifierProducts);
+
+    function refreshCount() {
+      const checked = modifierPanel.querySelectorAll("input[type=checkbox]:checked").length;
+      if (checked > 0) {
+        countEl.hidden = false;
+        countEl.textContent = checked;
+      } else {
+        countEl.hidden = true;
+      }
+    }
+    modifierPanel.addEventListener("change", refreshCount);
+
     toggle.addEventListener("click", () => {
       const isOpen = modifierPanel.classList.toggle("open");
-      toggle.textContent = isOpen ? "Extra feltétek elrejtése" : "+ Extra feltétek hozzáadása";
+      toggle.classList.toggle("open", isOpen);
+      labelEl.textContent = isOpen ? "Extra feltétek elrejtése" : "Extra feltétek hozzáadása";
     });
     body.appendChild(toggle);
     body.appendChild(modifierPanel);
@@ -154,6 +176,7 @@ function renderCard(product, modifierProducts) {
 
     if (modifierPanel) {
       modifierPanel.querySelectorAll("input[type=checkbox]").forEach((input) => (input.checked = false));
+      modifierPanel.dispatchEvent(new Event("change"));
     }
     addBtn.textContent = "Hozzáadva ✓";
     setTimeout(() => (addBtn.textContent = "Kosárba"), 900);
