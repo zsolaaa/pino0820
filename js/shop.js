@@ -1,7 +1,10 @@
 // webshop.html — product grid, category tabs, topping picker, cart bar.
 // Depends on js/cart.js (window.PinocchioCart) being loaded first.
 
-const CATEGORY_ORDER = ["Pizzák", "Pasta", "Saláta", "Extra feltétek", "Italok", "Üdítők & kávé", "Desszertek"];
+// "Extra feltétek" is deliberately excluded — those products aren't a
+// browsable category, they're only offered as toppings via the modifier
+// picker on Pizzák/Pasta cards (see renderGrid's showModifiers check below).
+const CATEGORY_ORDER = ["Pizzák", "Pasta", "Saláta", "Italok", "Üdítők & kávé", "Desszertek"];
 const MODIFIER_SUBCATEGORY_ORDER = ["Sajtok", "Húsok", "Zöldségek"];
 
 const grid = document.getElementById("product-grid");
