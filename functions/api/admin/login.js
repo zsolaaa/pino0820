@@ -1,7 +1,17 @@
 import { jsonResponse, errorResponse } from "../../_lib/json.js";
 import { createSessionCookie, constantTimeEqual } from "../../_lib/auth.js";
+import { checkRateLimit, getClientIp } from "../../_lib/rateLimit.js";
 
 export async function onRequestPost({ request, env }) {
+  const ip = getClientIp(request);
+
+  // Deliberately tight: legitimate staff log in once, rarely fail. This is
+  // the main brute-force defense for the single shared admin password.
+  const withinLimit = await checkRateLimit(env, { scope: "admin-login", ip, limit: 5, windowSeconds: 60 });
+  if (!withinLimit) {
+    return errorResponse("Túl sok bejelentkezési próbálkozás. Próbáld újra néhány perc múlva.", 429);
+  }
+
   let body;
   try {
     body = await request.json();

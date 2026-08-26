@@ -112,6 +112,13 @@ if (form) {
       return;
     }
 
+    const turnstileInput = document.querySelector('[name="cf-turnstile-response"]');
+    const turnstileToken = turnstileInput ? turnstileInput.value : "";
+    if (typeof window.turnstile !== "undefined" && !turnstileToken) {
+      showError("Kérjük, végezd el a biztonsági ellenőrzést a gomb felett.");
+      return;
+    }
+
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.textContent = "Küldés...";
@@ -124,6 +131,7 @@ if (form) {
       delivery_address: form.delivery_address.value.trim() || null,
       notes: form.notes.value.trim() || null,
       payment_method: form.payment_method.value,
+      turnstile_token: turnstileToken,
       items: cart.map((line) => ({
         product_id: line.product_id,
         quantity: line.quantity,
@@ -143,6 +151,7 @@ if (form) {
         showError(data.error || "Nem sikerült elküldeni a rendelést.");
         submitBtn.disabled = false;
         submitBtn.textContent = "Rendelés leadása";
+        if (typeof window.turnstile !== "undefined") window.turnstile.reset();
         return;
       }
 
@@ -156,6 +165,7 @@ if (form) {
       showError("Hálózati hiba történt. Próbáld újra, vagy hívj minket telefonon.");
       submitBtn.disabled = false;
       submitBtn.textContent = "Rendelés leadása";
+      if (typeof window.turnstile !== "undefined") window.turnstile.reset();
     }
   });
 }

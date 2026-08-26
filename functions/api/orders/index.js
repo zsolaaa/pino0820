@@ -1,5 +1,7 @@
 import { jsonResponse, errorResponse } from "../../_lib/json.js";
 import { computeOrderTotals, generateOrderNumber, OrderValidationError } from "../../_lib/orders.js";
+import { checkRateLimit, getClientIp } from "../../_lib/rateLimit.js";
+import { verifyTurnstile } from "../../_lib/turnstile.js";
 
 const FULFILLMENT_TYPES = ["delivery", "pickup"];
 const PAYMENT_METHODS = ["cod_cash", "cod_card"];
@@ -22,6 +24,13 @@ function validateCustomer(body) {
 }
 
 export async function onRequestPost({ request, env }) {
+  const ip = getClientIp(request);
+
+  const withinLimit = await checkRateLimit(env, { scope: "order", ip, limit: 8, windowSeconds: 60 });
+  if (!withinLimit) {
+    return errorResponse("Túl sok rendelés érkezett rövid idő alatt. Próbáld újra néhány perc múlva, vagy hívj minket telefonon.", 429);
+  }
+
   let body;
   try {
     body = await request.json();
@@ -30,6 +39,11 @@ export async function onRequestPost({ request, env }) {
   }
 
   try {
+    const turnstileOk = await verifyTurnstile(env, body.turnstile_token, ip);
+    if (!turnstileOk) {
+      throw new OrderValidationError("A biztonsági ellenőrzés sikertelen. Frissítsd az oldalt, és próbáld újra.");
+    }
+
     if (!FULFILLMENT_TYPES.includes(body.fulfillment_type)) {
       throw new OrderValidationError("Érvénytelen átvételi mód.");
     }

@@ -64,3 +64,14 @@ CREATE TABLE order_item_modifiers (
 );
 
 CREATE INDEX idx_modifiers_item ON order_item_modifiers(order_item_id);
+
+-- Fixed-window request counter, used for application-level rate limiting
+-- (order creation, admin login) since Cloudflare's zone-level Rate Limiting
+-- Rules require a custom domain on the account, which pinocchiobaja.hu isn't
+-- yet. window_start is a Unix-minute bucket (Date.now() / 60000, floored).
+CREATE TABLE rate_limits (
+  rl_key       TEXT NOT NULL,
+  window_start INTEGER NOT NULL,
+  count        INTEGER NOT NULL DEFAULT 1,
+  PRIMARY KEY (rl_key, window_start)
+);

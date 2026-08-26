@@ -10,6 +10,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Big+Shoulders+Text:wght@500;600;700&family=Literata:ital,opsz,wght@0,18..144,400;0,18..144,500;0,18..144,600;0,18..144,700;1,18..144,500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/shop.css">
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Ugrás a tartalomra</a>
@@ -95,6 +96,10 @@
           <label class="radio-option"><input type="radio" name="payment_method" value="cod_cash" checked> Készpénz átvételkor</label>
           <label class="radio-option"><input type="radio" name="payment_method" value="cod_card"> Bankkártya átvételkor</label>
         </div>
+      </div>
+
+      <div class="form-field">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAEc_V38ebAJZO7Wd"></div>
       </div>
 
       <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top: 0.5rem;">Rendelés leadása</button>
