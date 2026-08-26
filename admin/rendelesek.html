@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rendelések — Pinocchio Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Big+Shoulders+Text:wght@500;600;700&family=Literata:ital,opsz,wght@0,18..144,400;0,18..144,500;0,18..144,600;0,18..144,700;1,18..144,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/shop.css">
+</head>
+<body>
+<div class="admin-shell wrap">
+  <div class="shop-header">
+    <h1>Rendelések</h1>
+  </div>
+
+  <div class="admin-toolbar">
+    <div class="admin-filter">
+      <select id="status-filter" class="status-select">
+        <option value="">Összes státusz</option>
+        <option value="new">Új</option>
+        <option value="preparing">Készül</option>
+        <option value="ready">Kész</option>
+        <option value="completed">Lezárva</option>
+        <option value="cancelled">Törölve</option>
+      </select>
+      <button type="button" id="refresh-orders" class="btn btn-ghost">Frissítés</button>
+    </div>
+    <button type="button" id="admin-logout" class="btn btn-ghost">Kijelentkezés</button>
+  </div>
+
+  <div class="orders-table-wrap">
+    <table class="orders-table">
+      <thead>
+        <tr>
+          <th>Rendelés</th>
+          <th>Vevő</th>
+          <th>Átvétel</th>
+          <th>Tételek</th>
+          <th>Összeg</th>
+          <th>Státusz</th>
+          <th>Fizetés</th>
+        </tr>
+      </thead>
+      <tbody id="orders-table-body">
+        <tr><td colspan="7">Betöltés...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="../js/cart.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

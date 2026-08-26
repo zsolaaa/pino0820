@@ -1,0 +1,8 @@
+name = "pinocchio-baja"
+compatibility_date = "2026-08-01"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pinocchio"
+database_id = "5382d0be-a3ed-4e98-a296-7a4d261f2554"

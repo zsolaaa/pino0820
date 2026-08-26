@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pénztár — Pinocchio Pizza &amp; Pasta</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Big+Shoulders+Text:wght@500;600;700&family=Literata:ital,opsz,wght@0,18..144,400;0,18..144,500;0,18..144,600;0,18..144,700;1,18..144,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/shop.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Ugrás a tartalomra</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-main">Pinocchio</span>
+      <span class="logo-sub">Pizza &amp; Pasta</span>
+    </a>
+    <nav class="main-nav" aria-label="Fő navigáció">
+      <a href="index.html">Főoldal</a>
+      <a href="etlap.html">Teljes menü</a>
+      <a href="webshop.html">Rendelés</a>
+      <a href="index.html#contact">Elérhetőség</a>
+    </nav>
+    <a class="btn btn-primary btn-order" href="webshop.html">Vissza az étlaphoz</a>
+    <a class="header-phone" href="tel:+36307556846">+36 30 755 6846</a>
+    <button class="nav-toggle" aria-expanded="false" aria-controls="mobile-nav" aria-label="Menü megnyitása">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="mobile-nav" id="mobile-nav">
+    <a href="index.html">Főoldal</a>
+    <a href="etlap.html">Teljes menü</a>
+    <a href="webshop.html">Rendelés</a>
+    <a href="index.html#contact">Elérhetőség</a>
+    <a class="btn btn-primary" href="webshop.html">Vissza az étlaphoz</a>
+    <a class="btn btn-call" href="tel:+36307556846">Hívj most</a>
+  </div>
+</header>
+
+<main id="main">
+  <section class="wrap shop-header">
+    <h1>Pénztár</h1>
+    <p>Ellenőrizd a kosaradat, add meg az adataidat, és rendeld meg — fizetés készpénzzel vagy kártyával, átvételkor.</p>
+  </section>
+
+  <section class="wrap" id="cart-review-section">
+    <div class="cart-layout">
+      <div class="cart-items" id="cart-items"></div>
+      <div class="cart-summary" id="cart-summary"></div>
+    </div>
+  </section>
+
+  <section class="wrap" id="checkout-form-section" style="display:none; padding-bottom: 4rem;">
+    <div class="form-error" id="form-error" style="display:none;"></div>
+    <form id="checkout-form" style="max-width: 520px;">
+      <div class="form-field">
+        <label for="customer_name">Név</label>
+        <input type="text" id="customer_name" name="customer_name" required>
+      </div>
+      <div class="form-field">
+        <label for="customer_phone">Telefonszám</label>
+        <input type="tel" id="customer_phone" name="customer_phone" required>
+      </div>
+      <div class="form-field">
+        <label for="customer_email">Email (opcionális)</label>
+        <input type="email" id="customer_email" name="customer_email">
+      </div>
+
+      <div class="form-field">
+        <label>Átvétel módja</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="fulfillment_type" value="delivery" checked> Házhozszállítás (+200 Ft)</label>
+          <label class="radio-option"><input type="radio" name="fulfillment_type" value="pickup"> Elvitel a helyszínen</label>
+        </div>
+      </div>
+
+      <div class="form-field" id="delivery-fields">
+        <label for="delivery_address">Szállítási cím (Baján belül)</label>
+        <input type="text" id="delivery_address" name="delivery_address" placeholder="Utca, házszám">
+      </div>
+
+      <div class="form-field">
+        <label for="notes">Megjegyzés (opcionális)</label>
+        <textarea id="notes" name="notes" placeholder="Pl. csengő nem működik, allergia, stb."></textarea>
+      </div>
+
+      <div class="form-field">
+        <label>Fizetés</label>
+        <div class="radio-group">
+          <label class="radio-option"><input type="radio" name="payment_method" value="cod_cash" checked> Készpénz átvételkor</label>
+          <label class="radio-option"><input type="radio" name="payment_method" value="cod_card"> Bankkártya átvételkor</label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center; margin-top: 0.5rem;">Rendelés leadása</button>
+    </form>
+  </section>
+
+  <section class="wrap order-confirmation" id="order-confirmation" style="display:none;">
+    <h2 class="section-title center">Köszönjük a rendelést!</h2>
+    <p>A rendelésed száma:</p>
+    <p class="order-number"></p>
+    <p>Fizetendő összeg: <strong class="order-total"></strong></p>
+    <p>Hamarosan elkezdjük elkészíteni. Ha bármi kérdésed van, hívj minket: <a href="tel:+36307556846">+36 30 755 6846</a></p>
+    <p style="margin-top:2rem;"><a href="index.html" class="btn btn-ghost">Vissza a főoldalra</a></p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-grid">
+    <div>
+      <a href="index.html" class="logo">
+        <span class="logo-main">Pinocchio</span>
+        <span class="logo-sub">Pizza &amp; Pasta</span>
+      </a>
+      <p class="footer-tag">Vékony tészta, toszkán recept, Baja belvárosában.</p>
+    </div>
+    <div class="footer-col">
+      <p class="footer-heading">Elérhetőség</p>
+      <p>6500 Baja, Tóth Kálmán tér 5.</p>
+      <p><a href="tel:+36307556846">+36 30 755 6846</a></p>
+      <p>Minden nap 11:00–22:00</p>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <p>&copy; 2026 Pinocchio Pizza &amp; Pasta · <a href="tamogatas.html">Támogatás</a> · <a href="adatkezelesi-tajekoztato.html">Adatkezelés</a></p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/checkout.js"></script>
+</body>
+</html>

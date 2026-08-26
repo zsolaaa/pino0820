@@ -1,0 +1,413 @@
+/* Webshop, pénztár és admin oldalak — a css/style.css tokenjeire és .btn
+   osztályaira épül, itt csak az ott nem létező komponensek (termékrács,
+   kosár, form elemek, admin táblázat) kapnak stílust. */
+
+/* ============ Shared page scaffolding ============ */
+.shop-header {
+  padding: clamp(2rem, 5vw, 3.5rem) 0 clamp(1.5rem, 4vw, 2rem);
+}
+.shop-header h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+}
+.shop-header p {
+  color: var(--text-on-cream-soft);
+  margin-top: 0.75rem;
+  max-width: 46ch;
+}
+
+/* ============ Category tabs ============ */
+.category-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 1.5rem 0 2.5rem;
+}
+.category-tab {
+  font-family: var(--label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.85rem;
+  padding: 0.6rem 1.1rem;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  color: var(--text-on-cream);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.category-tab:hover { background: rgba(28,20,14,0.08); }
+.category-tab.active {
+  background: var(--ink);
+  color: var(--text-on-ink);
+}
+
+/* ============ Product grid ============ */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding-bottom: 4rem;
+}
+.product-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid rgba(28,20,14,0.1);
+}
+.product-card-image {
+  aspect-ratio: 4 / 3;
+  background: var(--cream-deep) center/cover no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-on-cream-soft);
+  font-family: var(--label);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.product-card-body {
+  padding: 1.1rem 1.2rem 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+.product-card-name {
+  font-family: var(--serif);
+  font-weight: 600;
+  font-size: 1.15rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.product-card-name em {
+  font-style: normal;
+  color: var(--text-on-marigold);
+  background: var(--marigold);
+  font-family: var(--label);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+}
+.product-card-desc {
+  color: var(--text-on-cream-soft);
+  font-size: 0.92rem;
+  flex: 1;
+}
+.product-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+.product-card-price {
+  font-family: var(--label);
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.product-card-add {
+  font-family: var(--label);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.82rem;
+  background: var(--red);
+  color: var(--text-on-red);
+  border: none;
+  border-radius: var(--radius);
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+  box-shadow: 0 3px 0 var(--red-deep);
+}
+.product-card-add:hover { transform: translateY(-1px); }
+.product-card-add:active { transform: translateY(0); box-shadow: 0 1px 0 var(--red-deep); }
+
+.product-card-customize {
+  font-family: var(--label);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-on-cream-soft);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-align: left;
+}
+
+/* ============ Topping picker ============ */
+.modifier-panel {
+  border-top: 1px dashed rgba(28,20,14,0.2);
+  padding-top: 0.75rem;
+  margin-top: 0.25rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.modifier-panel.open { display: flex; }
+.modifier-group-title {
+  font-family: var(--label);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-on-cream-soft);
+}
+.modifier-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+.modifier-option input { accent-color: var(--red); }
+.modifier-option .modifier-price {
+  margin-left: auto;
+  font-family: var(--label);
+  font-size: 0.82rem;
+  color: var(--text-on-cream-soft);
+}
+
+/* ============ Cart summary bar ============ */
+.cart-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 40;
+  background: var(--ink);
+  color: var(--text-on-ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem clamp(1.25rem, 4vw, 2.5rem);
+  transform: translateY(120%);
+  transition: transform 0.3s var(--ease);
+}
+.cart-bar.visible { transform: translateY(0); }
+.cart-bar-info {
+  font-family: var(--label);
+  font-size: 0.9rem;
+}
+.cart-bar-info strong { font-size: 1.05rem; }
+.cart-bar a.btn { flex-shrink: 0; }
+
+/* ============ Cart / checkout (penztar.html) ============ */
+.cart-layout {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 2.5rem;
+  align-items: start;
+  padding-bottom: 4rem;
+}
+@media (max-width: 860px) {
+  .cart-layout { grid-template-columns: 1fr; }
+}
+
+.cart-items { display: flex; flex-direction: column; gap: 1rem; }
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--paper);
+  border-radius: var(--radius);
+  border: 1px solid rgba(28,20,14,0.1);
+}
+.cart-item-body { flex: 1; }
+.cart-item-name { font-family: var(--serif); font-weight: 600; font-size: 1.05rem; }
+.cart-item-mods { color: var(--text-on-cream-soft); font-size: 0.85rem; margin-top: 0.2rem; }
+.cart-item-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+}
+.qty-btn {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  font-family: var(--label);
+  font-weight: 700;
+  cursor: pointer;
+  line-height: 1;
+}
+.cart-item-remove {
+  margin-left: auto;
+  font-family: var(--label);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  background: none;
+  border: none;
+  color: var(--red);
+  cursor: pointer;
+  text-decoration: underline;
+}
+.cart-item-price {
+  font-family: var(--label);
+  font-weight: 700;
+  white-space: nowrap;
+}
+.cart-empty {
+  color: var(--text-on-cream-soft);
+  padding: 2rem 0;
+}
+
+.cart-summary {
+  background: var(--paper);
+  border-radius: var(--radius);
+  border: 1px solid rgba(28,20,14,0.1);
+  padding: 1.5rem;
+  position: sticky;
+  top: 1rem;
+}
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--label);
+  font-size: 0.92rem;
+  padding: 0.4rem 0;
+}
+.summary-row.total {
+  border-top: 1px solid rgba(28,20,14,0.15);
+  margin-top: 0.5rem;
+  padding-top: 0.75rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+/* ============ Forms ============ */
+.form-field { display: flex; flex-direction: column; gap: 0.35rem; margin-bottom: 1rem; }
+.form-field label {
+  font-family: var(--label);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-on-cream-soft);
+}
+.form-field input,
+.form-field select,
+.form-field textarea {
+  font-family: var(--serif);
+  font-size: 1rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: var(--radius);
+  border: 1.5px solid rgba(28,20,14,0.25);
+  background: var(--cream);
+  color: var(--text-on-cream);
+}
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: 2px solid var(--red);
+  outline-offset: 1px;
+  border-color: var(--red);
+}
+.form-field textarea { resize: vertical; min-height: 4.5rem; }
+
+.radio-group { display: flex; gap: 1.25rem; flex-wrap: wrap; }
+.radio-option {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+}
+.radio-option input { accent-color: var(--red); }
+
+.form-error {
+  background: rgba(196,41,30,0.1);
+  border: 1px solid var(--red);
+  color: var(--red-deep);
+  border-radius: var(--radius);
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.order-confirmation {
+  text-align: center;
+  padding: 4rem 0;
+}
+.order-confirmation .order-number {
+  font-family: var(--display);
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 800;
+  color: var(--red);
+  margin: 1rem 0;
+}
+
+/* ============ Admin ============ */
+.admin-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.admin-login-card {
+  max-width: 360px;
+  margin: 10vh auto;
+  background: var(--paper);
+  border-radius: var(--radius);
+  border: 1px solid rgba(28,20,14,0.1);
+  padding: 2.5rem;
+}
+.admin-login-card h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
+
+.admin-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.admin-filter { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.orders-table-wrap { overflow-x: auto; padding-bottom: 3rem; }
+.orders-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; min-width: 900px; }
+.orders-table th, .orders-table td {
+  text-align: left;
+  padding: 0.75rem 0.85rem;
+  border-bottom: 1px solid rgba(28,20,14,0.1);
+  vertical-align: top;
+}
+.orders-table th {
+  font-family: var(--label);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.75rem;
+  color: var(--text-on-cream-soft);
+}
+.order-items-cell ul { margin: 0; padding-left: 1.1rem; }
+.order-items-cell li { margin-bottom: 0.2rem; }
+.status-select {
+  font-family: var(--label);
+  font-size: 0.85rem;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius);
+  border: 1.5px solid rgba(28,20,14,0.25);
+  background: var(--cream);
+}
+.status-badge {
+  display: inline-block;
+  font-family: var(--label);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  background: var(--marigold);
+  color: var(--text-on-marigold);
+}
+.status-badge.completed { background: var(--green); color: var(--text-on-green); }
+.status-badge.cancelled { background: rgba(28,20,14,0.15); color: var(--text-on-cream-soft); }
