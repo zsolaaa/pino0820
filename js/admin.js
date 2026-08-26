@@ -45,6 +45,43 @@ const ordersTableBody = document.getElementById("orders-table-body");
 const refreshBtn = document.getElementById("refresh-orders");
 const statusFilter = document.getElementById("status-filter");
 const logoutBtn = document.getElementById("admin-logout");
+const soundToggle = document.getElementById("sound-toggle");
+
+const AUTO_REFRESH_MS = 20000;
+const SOUND_PREF_KEY = "pinocchio-admin-sound";
+
+let knownOrderIds = null; // null = first load, no alert yet
+
+function isSoundOn() {
+  return localStorage.getItem(SOUND_PREF_KEY) !== "off";
+}
+
+function setSoundOn(on) {
+  localStorage.setItem(SOUND_PREF_KEY, on ? "on" : "off");
+  if (soundToggle) soundToggle.textContent = on ? "🔊 Hang be" : "🔇 Hang ki";
+}
+
+// Two short beeps via Web Audio API — no audio file needed.
+function playNewOrderSound() {
+  if (!isSoundOn()) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    [0, 0.22].forEach((delay) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = 880;
+      gain.gain.setValueAtTime(0.0001, ctx.currentTime + delay);
+      gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + delay + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + 0.18);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(ctx.currentTime + delay);
+      osc.stop(ctx.currentTime + delay + 0.2);
+    });
+  } catch {
+    // Web Audio unsupported/blocked — silently skip, the visual highlight still shows.
+  }
+}
 
 async function loadOrders() {
   if (!ordersTableBody) return;
@@ -66,13 +103,22 @@ async function loadOrders() {
     }
 
     const data = await res.json();
-    renderOrders(data.orders || []);
+    const orders = data.orders || [];
+
+    const currentIds = new Set(orders.map((o) => o.id));
+    const newIds = knownOrderIds
+      ? new Set([...currentIds].filter((id) => !knownOrderIds.has(id)))
+      : new Set();
+    if (knownOrderIds && newIds.size > 0) playNewOrderSound();
+    knownOrderIds = currentIds;
+
+    renderOrders(orders, newIds);
   } catch {
     ordersTableBody.innerHTML = '<tr><td colspan="7">Hálózati hiba történt a rendelések betöltésekor.</td></tr>';
   }
 }
 
-function renderOrders(orders) {
+function renderOrders(orders, newIds = new Set()) {
   if (!orders.length) {
     ordersTableBody.innerHTML = '<tr><td colspan="7">Nincs megjeleníthető rendelés.</td></tr>';
     return;
@@ -81,6 +127,7 @@ function renderOrders(orders) {
   ordersTableBody.innerHTML = "";
   for (const order of orders) {
     const tr = document.createElement("tr");
+    if (newIds.has(order.id)) tr.className = "new-order-flash";
 
     const itemsList = order.items
       .map((item) => {
@@ -142,5 +189,12 @@ if (ordersTableBody) {
     await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
     window.location.href = "login.html";
   });
+
+  if (soundToggle) {
+    setSoundOn(isSoundOn());
+    soundToggle.addEventListener("click", () => setSoundOn(!isSoundOn()));
+  }
+
   loadOrders();
+  setInterval(loadOrders, AUTO_REFRESH_MS);
 }

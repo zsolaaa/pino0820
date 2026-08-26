@@ -411,3 +411,9 @@
 }
 .status-badge.completed { background: var(--green); color: var(--text-on-green); }
 .status-badge.cancelled { background: rgba(28,20,14,0.15); color: var(--text-on-cream-soft); }
+
+@keyframes new-order-flash {
+  0%, 100% { background: transparent; }
+  15%, 45% { background: rgba(240,179,43,0.35); }
+}
+.new-order-flash { animation: new-order-flash 2.4s ease-in-out 2; }
