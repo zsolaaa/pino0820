@@ -46,9 +46,11 @@ const refreshBtn = document.getElementById("refresh-orders");
 const statusFilter = document.getElementById("status-filter");
 const logoutBtn = document.getElementById("admin-logout");
 const soundToggle = document.getElementById("sound-toggle");
+const volumeSlider = document.getElementById("volume-slider");
 
 const AUTO_REFRESH_MS = 20000;
 const SOUND_PREF_KEY = "pinocchio-admin-sound";
+const VOLUME_PREF_KEY = "pinocchio-admin-volume";
 
 let knownOrderIds = null; // null = first load, no alert yet
 
@@ -61,25 +63,64 @@ function setSoundOn(on) {
   if (soundToggle) soundToggle.textContent = on ? "🔊 Hang be" : "🔇 Hang ki";
 }
 
-// Two short beeps via Web Audio API — no audio file needed.
+function getVolume() {
+  const stored = parseInt(localStorage.getItem(VOLUME_PREF_KEY), 10);
+  return Number.isFinite(stored) ? Math.min(100, Math.max(0, stored)) / 100 : 0.8;
+}
+
+function setVolume(value) {
+  localStorage.setItem(VOLUME_PREF_KEY, String(value));
+}
+
+// Loud, siren-style alarm via Web Audio API (square wave, alternating high/low
+// pitch, several pulses) — designed to cut through a noisy kitchen, unlike a
+// single soft beep. No audio file needed.
 function playNewOrderSound() {
   if (!isSoundOn()) return;
+  const volume = getVolume();
+  if (volume <= 0) return;
+
   try {
     const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    [0, 0.22].forEach((delay) => {
+    const peakGain = 0.9 * volume;
+    const pulseDuration = 0.16;
+    const frequencies = [1046, 784]; // alternating two-tone siren
+
+    for (let i = 0; i < 8; i++) {
+      const delay = i * pulseDuration;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
-      osc.type = "sine";
-      osc.frequency.value = 880;
+      osc.type = "square";
+      osc.frequency.value = frequencies[i % 2];
       gain.gain.setValueAtTime(0.0001, ctx.currentTime + delay);
-      gain.gain.exponentialRampToValueAtTime(0.3, ctx.currentTime + delay + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + 0.18);
+      gain.gain.exponentialRampToValueAtTime(peakGain, ctx.currentTime + delay + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + delay + pulseDuration);
       osc.connect(gain).connect(ctx.destination);
       osc.start(ctx.currentTime + delay);
-      osc.stop(ctx.currentTime + delay + 0.2);
-    });
+      osc.stop(ctx.currentTime + delay + pulseDuration + 0.02);
+    }
   } catch {
     // Web Audio unsupported/blocked — silently skip, the visual highlight still shows.
+  }
+}
+
+// Short single beep at the current volume, used to preview the slider.
+function playPreviewBeep() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "square";
+    osc.frequency.value = 1046;
+    const peakGain = 0.9 * getVolume();
+    gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(Math.max(peakGain, 0.0002), ctx.currentTime + 0.015);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.18);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.2);
+  } catch {
+    // ignore
   }
 }
 
@@ -193,6 +234,12 @@ if (ordersTableBody) {
   if (soundToggle) {
     setSoundOn(isSoundOn());
     soundToggle.addEventListener("click", () => setSoundOn(!isSoundOn()));
+  }
+
+  if (volumeSlider) {
+    volumeSlider.value = String(Math.round(getVolume() * 100));
+    volumeSlider.addEventListener("input", () => setVolume(volumeSlider.value));
+    volumeSlider.addEventListener("change", () => playPreviewBeep());
   }
 
   loadOrders();

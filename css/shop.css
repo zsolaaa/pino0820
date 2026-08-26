@@ -371,7 +371,22 @@
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
-.admin-filter { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.admin-filter { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--label);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-on-cream-soft);
+  padding: 0 0.5rem;
+}
+.volume-control input[type="range"] {
+  accent-color: var(--red);
+  width: 120px;
+}
 
 .orders-table-wrap { overflow-x: auto; padding-bottom: 3rem; }
 .orders-table { width: 100%; border-collapse: collapse; font-size: 0.92rem; min-width: 900px; }
