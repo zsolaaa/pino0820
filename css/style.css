@@ -1180,11 +1180,10 @@ p { margin: 0; }
   .hero-actions { margin-top: 1.5rem; }
   .hero-actions .btn { width: 100%; justify-content: center; }
   .grant-badge {
-    position: static;
-    display: block;
-    width: 170px;
-    margin: 2rem auto 0;
-    left: auto; top: auto; bottom: auto; right: auto;
+    left: 0.6rem;
+    bottom: 0.6rem;
+    top: auto;
+    width: 130px;
   }
   .legal-def-row { grid-template-columns: 1fr; gap: 0.2rem; }
   .cookie-banner {
