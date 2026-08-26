@@ -130,6 +130,13 @@
 }
 .product-card-add:hover { transform: translateY(-1px); }
 .product-card-add:active { transform: translateY(0); box-shadow: 0 1px 0 var(--red-deep); }
+.product-card-add:disabled {
+  background: rgba(28,20,14,0.12);
+  color: var(--text-on-cream-soft);
+  box-shadow: none;
+  cursor: not-allowed;
+}
+.product-card-add:disabled:hover { transform: none; }
 
 .modifier-toggle {
   display: flex;

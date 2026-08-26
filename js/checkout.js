@@ -170,5 +170,12 @@ if (form) {
   });
 }
 
-renderCartItems();
-updateDeliveryFieldVisibility();
+if (window.ORDERING_ENABLED) {
+  renderCartItems();
+  updateDeliveryFieldVisibility();
+} else {
+  const notice = document.getElementById("ordering-paused-notice");
+  if (notice) notice.hidden = false;
+  document.getElementById("cart-review-section").style.display = "none";
+  formSection.style.display = "none";
+}

@@ -108,7 +108,7 @@ function renderCard(product, modifierProducts) {
     body.appendChild(desc);
   }
 
-  const canCustomize = modifierProducts.length > 0;
+  const canCustomize = window.ORDERING_ENABLED && modifierProducts.length > 0;
   let modifierPanel = null;
   if (canCustomize) {
     const toggle = document.createElement("button");
@@ -157,30 +157,36 @@ function renderCard(product, modifierProducts) {
   const addBtn = document.createElement("button");
   addBtn.type = "button";
   addBtn.className = "product-card-add";
-  addBtn.textContent = "Kosárba";
-  addBtn.addEventListener("click", () => {
-    const selectedModifiers = modifierPanel
-      ? Array.from(modifierPanel.querySelectorAll("input[type=checkbox]:checked")).map((input) => {
-          const mod = modifierProducts.find((m) => String(m.id) === input.value);
-          return { product_id: mod.id, name: mod.name, price: mod.price };
-        })
-      : [];
 
-    PinocchioCart.addToCart({
-      product_id: product.id,
-      name: product.name,
-      price: product.price,
-      quantity: 1,
-      modifiers: selectedModifiers,
+  if (window.ORDERING_ENABLED) {
+    addBtn.textContent = "Kosárba";
+    addBtn.addEventListener("click", () => {
+      const selectedModifiers = modifierPanel
+        ? Array.from(modifierPanel.querySelectorAll("input[type=checkbox]:checked")).map((input) => {
+            const mod = modifierProducts.find((m) => String(m.id) === input.value);
+            return { product_id: mod.id, name: mod.name, price: mod.price };
+          })
+        : [];
+
+      PinocchioCart.addToCart({
+        product_id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        modifiers: selectedModifiers,
+      });
+
+      if (modifierPanel) {
+        modifierPanel.querySelectorAll("input[type=checkbox]").forEach((input) => (input.checked = false));
+        modifierPanel.dispatchEvent(new Event("change"));
+      }
+      addBtn.textContent = "Hozzáadva ✓";
+      setTimeout(() => (addBtn.textContent = "Kosárba"), 900);
     });
-
-    if (modifierPanel) {
-      modifierPanel.querySelectorAll("input[type=checkbox]").forEach((input) => (input.checked = false));
-      modifierPanel.dispatchEvent(new Event("change"));
-    }
-    addBtn.textContent = "Hozzáadva ✓";
-    setTimeout(() => (addBtn.textContent = "Kosárba"), 900);
-  });
+  } else {
+    addBtn.textContent = "Hamarosan";
+    addBtn.disabled = true;
+  }
   footer.appendChild(addBtn);
 
   body.appendChild(footer);
@@ -220,6 +226,12 @@ function updateCartBar() {
 window.addEventListener("cart:updated", updateCartBar);
 
 (async function init() {
+  if (!window.ORDERING_ENABLED) {
+    const notice = document.getElementById("ordering-paused-notice");
+    if (notice) notice.hidden = false;
+    if (cartBar) cartBar.remove();
+  }
+
   try {
     allProducts = await fetchProducts();
   } catch (err) {
@@ -231,5 +243,5 @@ window.addEventListener("cart:updated", updateCartBar);
   activeCategory = categories[0];
   renderTabs(categories);
   renderGrid();
-  updateCartBar();
+  if (window.ORDERING_ENABLED) updateCartBar();
 })();

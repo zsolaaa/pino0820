@@ -1,6 +1,10 @@
 // Shared cart module (localStorage-backed) used by webshop.html and penztar.html.
 // Cart line shape: { line_id, product_id, name, price, quantity, modifiers: [{product_id, name, price}] }
 
+// Temporary kill switch for online ordering — mirrors functions/_lib/config.js.
+// Flip both to true once the lawyer-reviewed privacy policy / ÁSZF is ready.
+window.ORDERING_ENABLED = false;
+
 const CART_KEY = "pinocchio-cart";
 
 function getCart() {

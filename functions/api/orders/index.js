@@ -2,6 +2,7 @@ import { jsonResponse, errorResponse } from "../../_lib/json.js";
 import { computeOrderTotals, generateOrderNumber, OrderValidationError } from "../../_lib/orders.js";
 import { checkRateLimit, getClientIp } from "../../_lib/rateLimit.js";
 import { verifyTurnstile } from "../../_lib/turnstile.js";
+import { ORDERING_ENABLED } from "../../_lib/config.js";
 
 const FULFILLMENT_TYPES = ["delivery", "pickup"];
 const PAYMENT_METHODS = ["cod_cash", "cod_card"];
@@ -24,6 +25,13 @@ function validateCustomer(body) {
 }
 
 export async function onRequestPost({ request, env }) {
+  if (!ORDERING_ENABLED) {
+    return errorResponse(
+      "Az online rendelés jelenleg szünetel, hamarosan újra elérhető lesz. Addig hívj minket telefonon: +36 30 755 6846.",
+      503
+    );
+  }
+
   const ip = getClientIp(request);
 
   const withinLimit = await checkRateLimit(env, { scope: "order", ip, limit: 8, windowSeconds: 60 });
