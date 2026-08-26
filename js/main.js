@@ -23,7 +23,7 @@ function loadPhImage(el) {
   img.onload = () => {
     el.style.backgroundImage = `url("images/${filename}")`;
     el.style.backgroundSize = "cover";
-    el.style.backgroundPosition = "center";
+    el.style.backgroundPosition = el.getAttribute("data-ph-pos") || "center";
     el.classList.add("has-image");
     const label = el.querySelector(".ph-label");
     if (label) label.remove();
