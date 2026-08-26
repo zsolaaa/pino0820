@@ -4,7 +4,8 @@
 // "Extra feltétek" is deliberately excluded — those products aren't a
 // browsable category, they're only offered as toppings via the modifier
 // picker on Pizzák/Pasta cards (see renderGrid's showModifiers check below).
-const CATEGORY_ORDER = ["Pizzák", "Pasta", "Saláta", "Italok", "Üdítők & kávé", "Desszertek"];
+// "Italok" and "Üdítők & kávé" are excluded too — not orderable online.
+const CATEGORY_ORDER = ["Pizzák", "Pasta", "Saláta", "Desszertek"];
 const MODIFIER_SUBCATEGORY_ORDER = ["Sajtok", "Húsok", "Zöldségek"];
 
 const grid = document.getElementById("product-grid");
