@@ -1164,8 +1164,9 @@ p { margin: 0; }
   .ingredient-row { grid-template-columns: repeat(3, 1fr); row-gap: 2rem; }
   .process-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 140px; }
-  .g1, .g5, .g6 { grid-column: span 2; }
-  .g2, .g3, .g4 { grid-column: span 1; }
+  .g1, .g6 { grid-column: span 2; }
+  .g2, .g3, .g4, .g5 { grid-column: span 1; }
+  .g5 { grid-row: span 1; }
   .faq-columns { grid-template-columns: 1fr; gap: 2.5rem; }
   .cta-grid { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; }
