@@ -876,7 +876,8 @@ p { margin: 0; }
   font-size: 0.98rem;
 }
 .process-cta,
-.faq-cta {
+.faq-cta,
+.reviews-cta {
   margin-top: clamp(2.5rem, 5vw, 3.5rem);
   text-align: center;
 }
