@@ -876,11 +876,55 @@ p { margin: 0; }
   font-size: 0.98rem;
 }
 .process-cta,
-.faq-cta,
-.reviews-cta {
+.faq-cta {
   margin-top: clamp(2.5rem, 5vw, 3.5rem);
   text-align: center;
 }
+
+/* Aggregate-rating link: the reviews grid's footer, bound to it by a hairline */
+.reviews-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  gap: 0.4rem 0.75rem;
+  margin-top: clamp(2.25rem, 4.5vw, 3.25rem);
+  padding-top: clamp(1.6rem, 3.2vw, 2.4rem);
+  border-top: 1px solid rgba(28,20,14,0.12);
+  text-decoration: none;
+  color: var(--text-on-cream);
+}
+.reviews-summary-stars {
+  display: inline-flex;
+  gap: 0.15rem;
+  align-self: center;
+}
+.reviews-summary-stars .star {
+  width: 17px;
+  height: 17px;
+  fill: var(--marigold-deep);
+}
+.reviews-summary-score {
+  font-family: var(--display);
+  font-weight: 800;
+  font-size: 1.6rem;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.reviews-summary-count {
+  font-family: var(--serif);
+  font-size: 0.95rem;
+  color: var(--text-on-cream-soft);
+}
+.reviews-summary-arrow {
+  font-family: var(--label);
+  font-weight: 700;
+  color: var(--red);
+  transition: transform 0.3s var(--ease);
+}
+.reviews-summary:hover .reviews-summary-count,
+.reviews-summary:focus-visible .reviews-summary-count { text-decoration: underline; }
+.reviews-summary:hover .reviews-summary-arrow { transform: translateX(5px); }
 
 /* ============ Gallery ============ */
 .gallery { padding: clamp(4rem, 8vw, 7rem) 0; }
