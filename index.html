@@ -381,12 +381,12 @@
     <div class="wrap">
       <h2 class="section-title center">Egyenesen a konyhából</h2>
       <div class="gallery-grid">
-        <img class="gallery-image g1" src="images/gallery-1.jpg" loading="lazy" decoding="async" alt="Sonkás pizza közelről, terasz és kék ég a háttérben">
-        <img class="gallery-image g2" src="images/gallery-2.jpg" loading="lazy" decoding="async" style="object-position: 50% 74%" alt="Öt frissen sült pizza a Pinocchio pultján">
-        <img class="gallery-image g3" src="images/gallery-3.jpg" loading="lazy" decoding="async" alt="Villára tekert, paradicsomszószos spagetti közelről">
-        <img class="gallery-image g4" src="images/gallery-4.jpg" loading="lazy" decoding="async" style="object-position: 50% 68%" alt="Margherita pizza és két tányér pasta az asztalon">
-        <img class="gallery-image g5" src="images/gallery-5.jpg" loading="lazy" decoding="async" style="object-position: 50% 90%" alt="Csípős paradicsomos pasta közelről, háttérben a bajai utcakép">
-        <img class="gallery-image g6" src="images/gallery-6.jpg" loading="lazy" decoding="async" style="object-position: 50% 88%" alt="Rukkolás, olívabogyós tagliatelle a teraszon">
+        <img class="gallery-image g1" src="images/gallery-1.jpg" loading="lazy" decoding="async" role="button" tabindex="0" alt="Sonkás pizza közelről, terasz és kék ég a háttérben">
+        <img class="gallery-image g2" src="images/gallery-2.jpg" loading="lazy" decoding="async" role="button" tabindex="0" style="object-position: 50% 74%" alt="Öt frissen sült pizza a Pinocchio pultján">
+        <img class="gallery-image g3" src="images/gallery-3.jpg" loading="lazy" decoding="async" role="button" tabindex="0" alt="Villára tekert, paradicsomszószos spagetti közelről">
+        <img class="gallery-image g4" src="images/gallery-4.jpg" loading="lazy" decoding="async" role="button" tabindex="0" style="object-position: 50% 68%" alt="Margherita pizza és két tányér pasta az asztalon">
+        <img class="gallery-image g5" src="images/gallery-5.jpg" loading="lazy" decoding="async" role="button" tabindex="0" style="object-position: 50% 90%" alt="Csípős paradicsomos pasta közelről, háttérben a bajai utcakép">
+        <img class="gallery-image g6" src="images/gallery-6.jpg" loading="lazy" decoding="async" role="button" tabindex="0" style="object-position: 50% 88%" alt="Rukkolás, olívabogyós tagliatelle a teraszon">
       </div>
     </div>
   </section>
@@ -535,6 +535,17 @@
     <button type="button" id="cookie-reject" class="btn btn-ghost">Elutasítom</button>
     <button type="button" id="cookie-accept" class="btn btn-primary">Elfogadom</button>
   </div>
+</div>
+
+<div id="lightbox" class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Galéria — nagy nézet">
+  <button type="button" class="lightbox-close" aria-label="Bezárás">&times;</button>
+  <button type="button" class="lightbox-nav lightbox-prev" aria-label="Előző kép">&#8592;</button>
+  <figure class="lightbox-figure">
+    <img class="lightbox-img" src="images/gallery-1.jpg" alt="" decoding="async">
+    <figcaption class="lightbox-caption"></figcaption>
+  </figure>
+  <button type="button" class="lightbox-nav lightbox-next" aria-label="Következő kép">&#8594;</button>
+  <p class="lightbox-count" aria-hidden="true"></p>
 </div>
 
 <script src="js/main.js"></script>
