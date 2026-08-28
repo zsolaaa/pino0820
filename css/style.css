@@ -1196,7 +1196,7 @@ p { margin: 0; }
 .site-footer .logo { color: var(--text-on-ink); }
 .footer-grid {
   display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
   gap: 2rem;
   padding-bottom: 3rem;
   border-bottom: 1px solid rgba(243,233,214,0.15);
