@@ -264,6 +264,15 @@ p { margin: 0; }
   flex-direction: column;
 }
 .hero-title .accent { color: var(--red); }
+.hero-title .hero-title-kw {
+  font-size: 0.34em;
+  font-family: var(--label);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-on-cream-soft);
+  margin-top: 0.6rem;
+}
 .hero-lede {
   font-family: var(--serif);
   font-size: 1.15rem;
@@ -333,6 +342,7 @@ p { margin: 0; }
 .hero-title span:nth-child(1) { transition-delay: 0.15s; }
 .hero-title span:nth-child(2) { transition-delay: 0.27s; }
 .hero-title span:nth-child(3) { transition-delay: 0.39s; }
+.hero-title span:nth-child(4) { transition-delay: 0.5s; }
 .hero-copy > .hero-lede { transition-delay: 0.55s; }
 .hero-copy > .hero-actions { transition-delay: 0.65s; }
 .hero-copy.is-visible > .place-tag,
