@@ -3,3 +3,6 @@
 screencapture-*.png
 .wrangler/
 node_modules/
+
+# SEO audit artifacts (local only)
+pinocchiobaja.hu-audit/

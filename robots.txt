@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+Disallow: /penztar.html
 
 Sitemap: https://www.pinocchiobaja.hu/sitemap.xml
