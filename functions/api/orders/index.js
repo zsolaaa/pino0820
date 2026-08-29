@@ -60,39 +60,46 @@ export async function onRequestPost({ request, env }) {
     const { orderItems, subtotal, deliveryFee, total } = await computeOrderTotals(env, body);
     const orderNumber = await generateOrderNumber(env);
 
-    const insertOrder = env.DB.prepare(
-      `INSERT INTO orders
-        (order_number, status, fulfillment_type, customer_name, customer_phone, customer_email,
-         delivery_address, notes, subtotal, delivery_fee, total, payment_method, payment_status)
-       VALUES (?, 'new', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'unpaid')`
-    ).bind(
-      orderNumber,
-      body.fulfillment_type,
-      body.customer_name.trim(),
-      body.customer_phone.trim(),
-      body.customer_email ? String(body.customer_email).trim() : null,
-      body.fulfillment_type === "delivery" ? body.delivery_address.trim() : null,
-      body.notes ? String(body.notes).trim() : null,
-      subtotal,
-      deliveryFee,
-      total,
-      body.payment_method
-    );
-
-    // D1 batch() runs as a single transaction; we can't reference the order's
-    // generated id inside the same batch, so the order is inserted first,
-    // then items are inserted in a batch bound with that id.
-    const orderResult = await insertOrder.run();
-    const orderId = orderResult.meta.last_row_id;
-
-    const boundItemStatements = orderItems.map((item) =>
+    // The order and its items go in a single D1 batch (one transaction) so an
+    // order can never be committed without its line items. The item rows can't
+    // bind the order's generated id JS-side, so they resolve it from the unique
+    // order_number at execution time — the preceding insert in the same
+    // transaction is already visible to the subquery.
+    const orderAndItems = [
       env.DB.prepare(
-        `INSERT INTO order_items (order_id, product_id, product_name, unit_price, quantity, line_total)
-         VALUES (?, ?, ?, ?, ?, ?)`
-      ).bind(orderId, item.product_id, item.product_name, item.unit_price, item.quantity, item.line_total)
-    );
-    const itemResults = await env.DB.batch(boundItemStatements);
+        `INSERT INTO orders
+          (order_number, status, fulfillment_type, customer_name, customer_phone, customer_email,
+           delivery_address, notes, subtotal, delivery_fee, total, payment_method, payment_status)
+         VALUES (?, 'new', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'unpaid')`
+      ).bind(
+        orderNumber,
+        body.fulfillment_type,
+        body.customer_name.trim(),
+        body.customer_phone.trim(),
+        body.customer_email ? String(body.customer_email).trim() : null,
+        body.fulfillment_type === "delivery" ? body.delivery_address.trim() : null,
+        body.notes ? String(body.notes).trim() : null,
+        subtotal,
+        deliveryFee,
+        total,
+        body.payment_method
+      ),
+      ...orderItems.map((item) =>
+        env.DB.prepare(
+          `INSERT INTO order_items (order_id, product_id, product_name, unit_price, quantity, line_total)
+           VALUES ((SELECT id FROM orders WHERE order_number = ?), ?, ?, ?, ?, ?)`
+        ).bind(orderNumber, item.product_id, item.product_name, item.unit_price, item.quantity, item.line_total)
+      ),
+    ];
 
+    const batchResults = await env.DB.batch(orderAndItems);
+    const orderId = batchResults[0].meta.last_row_id;
+    const itemResults = batchResults.slice(1);
+
+    // Modifiers need each order_item's generated id, so they can't join the
+    // batch above. If this second write fails, roll the order back (ON DELETE
+    // CASCADE clears its items) so the customer's "failed" message is truthful
+    // and no phantom order is left for staff.
     const modifierStatements = [];
     orderItems.forEach((item, idx) => {
       const orderItemId = itemResults[idx].meta.last_row_id;
@@ -105,7 +112,12 @@ export async function onRequestPost({ request, env }) {
       }
     });
     if (modifierStatements.length) {
-      await env.DB.batch(modifierStatements);
+      try {
+        await env.DB.batch(modifierStatements);
+      } catch (err) {
+        await env.DB.prepare("DELETE FROM orders WHERE id = ?").bind(orderId).run().catch(() => {});
+        throw err;
+      }
     }
 
     return jsonResponse(

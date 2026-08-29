@@ -13,36 +13,40 @@ export async function onRequestGet({ request, env }) {
     return errorResponse("Érvénytelen státusz szűrő.", 400);
   }
 
-  const where = status ? "WHERE o.status = ?" : "";
-  const stmt = env.DB.prepare(
-    `SELECT * FROM orders o ${where} ORDER BY o.created_at DESC`
-  );
-  const { results: orders } = status ? await stmt.bind(status).all() : await stmt.all();
+  // Paginate so the response and the queries stay bounded as orders accumulate.
+  const limit = Math.min(Math.max(parseInt(url.searchParams.get("limit"), 10) || 100, 1), 500);
+  const offset = Math.max(parseInt(url.searchParams.get("offset"), 10) || 0, 0);
+
+  const filter = status ? "WHERE o.status = ?" : "";
+  // The page of order ids, reused as a subquery for items/modifiers so neither
+  // query needs a per-id bound parameter (which would eventually blow D1's limit).
+  const pageSql = `SELECT o.id FROM orders o ${filter} ORDER BY o.created_at DESC LIMIT ? OFFSET ?`;
+  const pageBinds = status ? [status, limit, offset] : [limit, offset];
+
+  const { results: orders } = await env.DB
+    .prepare(`SELECT * FROM orders o ${filter} ORDER BY o.created_at DESC LIMIT ? OFFSET ?`)
+    .bind(...pageBinds)
+    .all();
 
   if (!orders.length) return jsonResponse({ orders: [] });
 
-  const orderIds = orders.map((o) => o.id);
-  const placeholders = orderIds.map(() => "?").join(",");
-  const { results: items } = await env.DB.prepare(
-    `SELECT * FROM order_items WHERE order_id IN (${placeholders}) ORDER BY id`
-  )
-    .bind(...orderIds)
+  const { results: items } = await env.DB
+    .prepare(`SELECT * FROM order_items WHERE order_id IN (${pageSql}) ORDER BY id`)
+    .bind(...pageBinds)
     .all();
 
-  const itemIds = items.map((i) => i.id);
-  let modifiersByItem = new Map();
-  if (itemIds.length) {
-    const modPlaceholders = itemIds.map(() => "?").join(",");
-    const { results: modifiers } = await env.DB.prepare(
-      `SELECT * FROM order_item_modifiers WHERE order_item_id IN (${modPlaceholders})`
+  const { results: modifiers } = await env.DB
+    .prepare(
+      `SELECT * FROM order_item_modifiers
+       WHERE order_item_id IN (SELECT oi.id FROM order_items oi WHERE oi.order_id IN (${pageSql}))`
     )
-      .bind(...itemIds)
-      .all();
-    modifiersByItem = new Map();
-    for (const mod of modifiers) {
-      if (!modifiersByItem.has(mod.order_item_id)) modifiersByItem.set(mod.order_item_id, []);
-      modifiersByItem.get(mod.order_item_id).push({ name: mod.name, price: mod.price });
-    }
+    .bind(...pageBinds)
+    .all();
+
+  const modifiersByItem = new Map();
+  for (const mod of modifiers) {
+    if (!modifiersByItem.has(mod.order_item_id)) modifiersByItem.set(mod.order_item_id, []);
+    modifiersByItem.get(mod.order_item_id).push({ name: mod.name, price: mod.price });
   }
 
   const itemsByOrder = new Map();
@@ -76,5 +80,8 @@ export async function onRequestGet({ request, env }) {
     items: itemsByOrder.get(o.id) || [],
   }));
 
-  return jsonResponse({ orders: result });
+  return jsonResponse({
+    orders: result,
+    page: { limit, offset, count: result.length, has_more: result.length === limit },
+  });
 }
