@@ -1,0 +1,14 @@
+{
+  "name": "Pinocchio Pizza & Pasta",
+  "short_name": "Pinocchio",
+  "description": "Belvárosi pizzéria Baján — eredeti toszkán recept, vékony, ropogós tészta.",
+  "lang": "hu",
+  "start_url": "/",
+  "display": "browser",
+  "theme_color": "#C4291E",
+  "background_color": "#F6EFE2",
+  "icons": [
+    { "src": "/images/favicon/icon-192.png", "type": "image/png", "sizes": "192x192" },
+    { "src": "/images/favicon/icon-512.png", "type": "image/png", "sizes": "512x512" }
+  ]
+}
