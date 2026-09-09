@@ -984,6 +984,11 @@ p { margin: 0; }
 }
 .gallery-image:hover,
 .gallery-image:focus-visible { filter: brightness(1.08); }
+/* <picture> wrappers must not become the grid/flow item — let the <img> inherit
+   the parent context (grid spans, aspect-ratio, auto margins) unchanged. */
+.gallery-grid picture,
+.story-media picture,
+.ingredient picture { display: contents; }
 .g1 { grid-column: span 2; grid-row: span 2; }
 .g2 { grid-column: span 2; }
 .g3 { grid-column: span 1; }
