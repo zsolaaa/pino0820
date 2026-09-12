@@ -783,6 +783,10 @@ p { margin: 0; }
   margin-left: 0.4rem;
   vertical-align: middle;
 }
+.menu-row h3 em.new {
+  color: var(--red);
+  border-color: var(--red);
+}
 .menu-row .dots {
   flex: 1;
   border-bottom: 1px dotted rgba(236,227,200,0.35);
