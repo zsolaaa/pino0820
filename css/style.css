@@ -993,6 +993,12 @@ p { margin: 0; }
 .gallery-grid picture,
 .story-media picture,
 .ingredient picture { display: contents; }
+/* display: contents on <picture> stops suppressing its <source> children's own
+   box (normally invisible), so they'd otherwise become extra, blank grid/flow
+   items and push everything after them out of place. */
+.gallery-grid picture source,
+.story-media picture source,
+.ingredient picture source { display: none; }
 .g1 { grid-column: span 2; grid-row: span 2; }
 .g2 { grid-column: span 2; }
 .g3 { grid-column: span 1; }
