@@ -761,6 +761,23 @@ p { margin: 0; }
   border-bottom: 1px dotted rgba(236,227,200,0.28);
 }
 .menu-list li:nth-child(-n+2) { padding-top: 0; }
+.menu-list.numbered { counter-reset: menuitem; }
+.menu-list.numbered li {
+  position: relative;
+  padding-left: 1.9rem;
+  counter-increment: menuitem;
+}
+.menu-list.numbered li::before {
+  content: counter(menuitem) ".";
+  position: absolute;
+  left: 0;
+  top: 1rem;
+  font-family: var(--label);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-on-green-soft);
+}
+.menu-list.numbered li:nth-child(-n+2)::before { top: 0; }
 .menu-row {
   display: flex;
   align-items: baseline;
