@@ -391,6 +391,181 @@ if (productsList) {
   loadProducts();
 }
 
+const PAUSE_REASON_LABELS = {
+  overload: "Túlterheltség",
+  technical: "Technikai probléma",
+  kitchen_closed: "Konyha zárva",
+  ingredients: "Alapanyaghiány",
+  other: "Egyéb",
+};
+const PAUSE_DURATION_OPTIONS = [
+  { minutes: 20, label: "20 percre" },
+  { minutes: 40, label: "40 percre" },
+  { minutes: 60, label: "1 órára" },
+  { minutes: 120, label: "2 órára" },
+  { minutes: null, label: "Amíg vissza nem kapcsolom" },
+];
+
+const pausePanel = document.getElementById("pause-panel");
+
+function formatPauseUntil(pausedUntil) {
+  if (!pausedUntil) return "amíg manuálisan vissza nem kapcsolod";
+  const until = new Date(pausedUntil.replace(" ", "T") + "Z");
+  const timeStr = until.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Budapest" });
+  return `${timeStr}-ig, utána automatikusan visszakapcsol`;
+}
+
+function renderPauseIdle() {
+  pausePanel.innerHTML = "";
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "btn pause-start-btn";
+  btn.textContent = "🔴 RENDELÉS SZÜNETELTETÉSE";
+  btn.addEventListener("click", () => renderPauseForm());
+  pausePanel.appendChild(btn);
+}
+
+function renderPauseForm() {
+  pausePanel.innerHTML = "";
+  const form = document.createElement("form");
+  form.className = "pause-form";
+
+  const reasonFieldset = document.createElement("fieldset");
+  reasonFieldset.innerHTML = `<legend>Indok</legend>`;
+  for (const [value, label] of Object.entries(PAUSE_REASON_LABELS)) {
+    const optLabel = document.createElement("label");
+    optLabel.className = "pause-radio";
+    optLabel.innerHTML = `<input type="radio" name="pause-reason" value="${value}"${value === "overload" ? " checked" : ""}> ${label}`;
+    reasonFieldset.appendChild(optLabel);
+  }
+  form.appendChild(reasonFieldset);
+
+  const durationFieldset = document.createElement("fieldset");
+  durationFieldset.innerHTML = `<legend>Időtartam</legend>`;
+  PAUSE_DURATION_OPTIONS.forEach((opt, idx) => {
+    const optLabel = document.createElement("label");
+    optLabel.className = "pause-radio";
+    optLabel.innerHTML = `<input type="radio" name="pause-duration" value="${opt.minutes ?? ""}"${idx === 0 ? " checked" : ""}> ${opt.label}`;
+    durationFieldset.appendChild(optLabel);
+  });
+  form.appendChild(durationFieldset);
+
+  const actions = document.createElement("div");
+  actions.className = "pause-form-actions";
+
+  const confirmBtn = document.createElement("button");
+  confirmBtn.type = "submit";
+  confirmBtn.className = "btn btn-primary";
+  confirmBtn.textContent = "Szüneteltetés indítása";
+  actions.appendChild(confirmBtn);
+
+  const cancelBtn = document.createElement("button");
+  cancelBtn.type = "button";
+  cancelBtn.className = "btn btn-ghost";
+  cancelBtn.textContent = "Mégse";
+  cancelBtn.addEventListener("click", () => renderPauseIdle());
+  actions.appendChild(cancelBtn);
+
+  form.appendChild(actions);
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    confirmBtn.disabled = true;
+    const reason = form.querySelector('input[name="pause-reason"]:checked').value;
+    const durationValue = form.querySelector('input[name="pause-duration"]:checked').value;
+
+    const res = await fetch("/api/admin/shop-status", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({
+        is_paused: true,
+        reason,
+        duration_minutes: durationValue ? parseInt(durationValue, 10) : null,
+      }),
+    });
+    if (res.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+    if (!res.ok) {
+      confirmBtn.disabled = false;
+      return;
+    }
+    const status = await res.json();
+    renderPauseActive(status);
+  });
+
+  pausePanel.innerHTML = "";
+  pausePanel.appendChild(form);
+}
+
+function renderPauseActive(status) {
+  pausePanel.innerHTML = "";
+  const banner = document.createElement("div");
+  banner.className = "pause-active-banner";
+  banner.innerHTML = `
+    <span class="pause-active-icon" aria-hidden="true">⏸</span>
+    <div class="pause-active-body">
+      <strong>Rendelés szüneteltetve</strong>
+      <span>Indok: ${PAUSE_REASON_LABELS[status.reason] || status.reason} · ${formatPauseUntil(status.paused_until)}</span>
+    </div>
+  `;
+
+  const resumeBtn = document.createElement("button");
+  resumeBtn.type = "button";
+  resumeBtn.className = "btn btn-primary";
+  resumeBtn.textContent = "▶ Rendelés visszakapcsolása";
+  resumeBtn.addEventListener("click", async () => {
+    resumeBtn.disabled = true;
+    const res = await fetch("/api/admin/shop-status", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ is_paused: false }),
+    });
+    if (res.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+    if (!res.ok) {
+      resumeBtn.disabled = false;
+      return;
+    }
+    renderPauseIdle();
+  });
+  banner.appendChild(resumeBtn);
+
+  pausePanel.appendChild(banner);
+}
+
+async function loadPauseStatus() {
+  if (!pausePanel) return;
+  try {
+    const res = await fetch("/api/admin/shop-status", { credentials: "same-origin" });
+    if (res.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+    if (!res.ok) {
+      renderPauseIdle();
+      return;
+    }
+    const status = await res.json();
+    if (status.is_paused) {
+      renderPauseActive(status);
+    } else {
+      renderPauseIdle();
+    }
+  } catch {
+    renderPauseIdle();
+  }
+}
+
+if (pausePanel) {
+  loadPauseStatus();
+}
+
 if (logoutBtn) {
   logoutBtn.addEventListener("click", async () => {
     await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });

@@ -65,6 +65,20 @@ CREATE TABLE order_item_modifiers (
 
 CREATE INDEX idx_modifiers_item ON order_item_modifiers(order_item_id);
 
+-- Singleton row (id = 1) toggled from the admin panel to temporarily pause
+-- online ordering (kitchen overload, technical issue, ran out of ingredients,
+-- etc.) without a code deploy. Separate from the ORDERING_ENABLED kill switch
+-- in functions/_lib/config.js, which is for the pre-launch/legal-review state.
+CREATE TABLE shop_status (
+  id            INTEGER PRIMARY KEY CHECK (id = 1),
+  is_paused     INTEGER NOT NULL DEFAULT 0,
+  reason        TEXT,
+  paused_until  TEXT,
+  updated_at    TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+INSERT INTO shop_status (id, is_paused) VALUES (1, 0);
+
 -- Fixed-window request counter, used for application-level rate limiting
 -- (order creation, admin login) since Cloudflare's zone-level Rate Limiting
 -- Rules require a custom domain on the account, which pinocchiobaja.hu isn't

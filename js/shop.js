@@ -15,6 +15,7 @@ const cartBarInfo = document.getElementById("cart-bar-info");
 
 let allProducts = [];
 let activeCategory = null;
+let temporarilyPaused = false;
 
 async function fetchProducts() {
   const res = await fetch("/api/products");
@@ -108,7 +109,7 @@ function renderCard(product, modifierProducts) {
     body.appendChild(desc);
   }
 
-  const canCustomize = window.ORDERING_ENABLED && modifierProducts.length > 0;
+  const canCustomize = window.ORDERING_ENABLED && !temporarilyPaused && modifierProducts.length > 0;
   let modifierPanel = null;
   if (canCustomize) {
     const toggle = document.createElement("button");
@@ -158,7 +159,7 @@ function renderCard(product, modifierProducts) {
   addBtn.type = "button";
   addBtn.className = "product-card-add";
 
-  if (window.ORDERING_ENABLED) {
+  if (window.ORDERING_ENABLED && !temporarilyPaused) {
     addBtn.textContent = "Kosárba";
     addBtn.addEventListener("click", () => {
       const selectedModifiers = modifierPanel
@@ -184,7 +185,7 @@ function renderCard(product, modifierProducts) {
       setTimeout(() => (addBtn.textContent = "Kosárba"), 900);
     });
   } else {
-    addBtn.textContent = "Hamarosan";
+    addBtn.textContent = temporarilyPaused ? "Szünetel" : "Hamarosan";
     addBtn.disabled = true;
   }
   footer.appendChild(addBtn);
@@ -230,6 +231,16 @@ window.addEventListener("cart:updated", updateCartBar);
     const notice = document.getElementById("ordering-paused-notice");
     if (notice) notice.hidden = false;
     if (cartBar) cartBar.remove();
+  } else {
+    const status = await PinocchioCart.fetchShopStatus();
+    if (status.is_paused) {
+      temporarilyPaused = true;
+      const notice = document.getElementById("temp-pause-notice");
+      const message = document.getElementById("temp-pause-message");
+      if (message) message.textContent = PinocchioCart.formatPauseMessage(status.paused_until);
+      if (notice) notice.hidden = false;
+      if (cartBar) cartBar.remove();
+    }
   }
 
   try {
@@ -243,5 +254,5 @@ window.addEventListener("cart:updated", updateCartBar);
   activeCategory = categories[0];
   renderTabs(categories);
   renderGrid();
-  if (window.ORDERING_ENABLED) updateCartBar();
+  if (window.ORDERING_ENABLED && !temporarilyPaused) updateCartBar();
 })();

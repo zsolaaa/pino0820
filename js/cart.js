@@ -73,6 +73,33 @@ function formatHuf(amount) {
   return `${amount.toLocaleString("hu-HU")} Ft`;
 }
 
+// Checks the admin-toggleable temporary order pause (separate from the
+// permanent ORDERING_ENABLED kill switch above). Fails open — a transient
+// network/API error is treated as "not paused" so it never blocks ordering
+// on its own; the order-creation endpoint enforces the real pause either way.
+async function fetchShopStatus() {
+  try {
+    const res = await fetch("/api/shop-status");
+    if (!res.ok) return { is_paused: false, reason: null, paused_until: null };
+    return await res.json();
+  } catch {
+    return { is_paused: false, reason: null, paused_until: null };
+  }
+}
+
+function formatPauseMessage(pausedUntil) {
+  if (!pausedUntil) {
+    return "Jelenleg átmenetileg nem fogadunk online rendeléseket. Kérjük, próbálja meg később.";
+  }
+  const until = new Date(pausedUntil.replace(" ", "T") + "Z");
+  const timeStr = until.toLocaleTimeString("hu-HU", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "Europe/Budapest",
+  });
+  return `Jelenleg átmenetileg nem fogadunk online rendeléseket. Kérjük, próbálja meg ${timeStr} után újra.`;
+}
+
 window.PinocchioCart = {
   getCart,
   saveCart,
@@ -85,4 +112,6 @@ window.PinocchioCart = {
   cartCount,
   cartSubtotal,
   formatHuf,
+  fetchShopStatus,
+  formatPauseMessage,
 };
