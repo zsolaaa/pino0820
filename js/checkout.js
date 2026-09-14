@@ -139,34 +139,41 @@ if (form) {
       })),
     };
 
-    try {
-      const res = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        showError(data.error || "Nem sikerült elküldeni a rendelést.");
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Rendelés leadása";
-        if (typeof window.turnstile !== "undefined") window.turnstile.reset();
-        return;
-      }
-
-      PinocchioCart.clearCart();
-      formSection.style.display = "none";
-      document.getElementById("cart-review-section").style.display = "none";
-      confirmationEl.style.display = "";
-      confirmationEl.querySelector(".order-number").textContent = data.order.order_number;
-      confirmationEl.querySelector(".order-total").textContent = PinocchioCart.formatHuf(data.order.total);
-    } catch (err) {
-      showError("Hálózati hiba történt. Próbáld újra, vagy hívj minket telefonon.");
+    function failSubmit(message) {
+      showError(message);
       submitBtn.disabled = false;
       submitBtn.textContent = "Rendelés leadása";
       if (typeof window.turnstile !== "undefined") window.turnstile.reset();
     }
+
+    // Only the request itself may fall back to the retry message. Anything
+    // after a successful response runs outside this try: once the order
+    // exists, telling the customer to try again would have them order twice.
+    let res;
+    let data;
+    try {
+      res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      data = await res.json();
+    } catch (err) {
+      failSubmit("Hálózati hiba történt. Próbáld újra, vagy hívj minket telefonon.");
+      return;
+    }
+
+    if (!res.ok) {
+      failSubmit(data.error || "Nem sikerült elküldeni a rendelést.");
+      return;
+    }
+
+    PinocchioCart.clearCart();
+    formSection.style.display = "none";
+    document.getElementById("cart-review-section").style.display = "none";
+    confirmationEl.style.display = "";
+    confirmationEl.querySelector(".order-number").textContent = data.order.order_number;
+    confirmationEl.querySelector(".order-total").textContent = PinocchioCart.formatHuf(data.order.total);
   });
 }
 

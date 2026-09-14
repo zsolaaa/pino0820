@@ -7,7 +7,15 @@ window.ORDERING_ENABLED = false;
 
 const CART_KEY = "pinocchio-cart";
 
+// localStorage isn't always writable — private browsing, blocked site data and
+// a full quota all make setItem throw. Rather than letting that bubble up
+// through every cart action, the cart falls back to memory for the session:
+// ordering still works end to end, it just doesn't survive a reload.
+// null = storage is in use; an array = storage failed and this is the cart.
+let memoryCart = null;
+
 function getCart() {
+  if (memoryCart) return memoryCart;
   try {
     const raw = localStorage.getItem(CART_KEY);
     const cart = raw ? JSON.parse(raw) : [];
@@ -18,7 +26,12 @@ function getCart() {
 }
 
 function saveCart(cart) {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  try {
+    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    memoryCart = null;
+  } catch {
+    memoryCart = cart;
+  }
   window.dispatchEvent(new CustomEvent("cart:updated", { detail: { cart } }));
 }
 
