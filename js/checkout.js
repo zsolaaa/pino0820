@@ -3,6 +3,7 @@
 
 const itemsEl = document.getElementById("cart-items");
 const summaryEl = document.getElementById("cart-summary");
+const priceNoticeEl = document.getElementById("price-update-notice");
 const formSection = document.getElementById("checkout-form-section");
 const form = document.getElementById("checkout-form");
 const errorEl = document.getElementById("form-error");
@@ -76,6 +77,59 @@ function renderSummary(cart) {
     <div class="summary-row"><span>Szállítási díj</span><span>${isDelivery ? PinocchioCart.formatHuf(deliveryFee) : "—"}</span></div>
     <div class="summary-row total"><span>Összesen</span><span>${PinocchioCart.formatHuf(total)}</span></div>
   `;
+}
+
+// The cart lives in localStorage with prices frozen at add-to-cart time, so
+// they can go stale (a customer parks a full cart for days, or a price
+// changes while items already sit in one). This is purely a UX check — the
+// server always re-prices from the DB at order creation regardless — but
+// showing the customer a mismatched total before they submit is bad trust,
+// so the checkout page reconciles against current prices once on load.
+function reconcileCartPrices(cart, products) {
+  const priceById = new Map(products.map((p) => [p.id, p.price]));
+  let changed = false;
+
+  const reconciled = cart.map((line) => {
+    const currentPrice = priceById.get(line.product_id);
+    const priceChanged = currentPrice != null && currentPrice !== line.price;
+
+    const newModifiers = (line.modifiers || []).map((mod) => {
+      const modCurrentPrice = priceById.get(mod.product_id);
+      if (modCurrentPrice != null && modCurrentPrice !== mod.price) {
+        changed = true;
+        return { ...mod, price: modCurrentPrice };
+      }
+      return mod;
+    });
+
+    if (priceChanged) changed = true;
+    if (!priceChanged && newModifiers === line.modifiers) return line;
+    return { ...line, price: priceChanged ? currentPrice : line.price, modifiers: newModifiers };
+  });
+
+  return { cart: reconciled, changed };
+}
+
+async function reconcilePricesOnce() {
+  const cart = PinocchioCart.getCart();
+  if (!cart.length) return;
+
+  try {
+    const res = await fetch("/api/products");
+    if (!res.ok) return;
+    const data = await res.json();
+    const { cart: reconciled, changed } = reconcileCartPrices(cart, data.products || []);
+    if (changed) {
+      PinocchioCart.saveCart(reconciled);
+      if (priceNoticeEl) {
+        priceNoticeEl.textContent =
+          "Egy vagy több tétel ára frissült a legutóbbi látogatásod óta — az alábbi árak már az aktuálisak.";
+        priceNoticeEl.hidden = false;
+      }
+    }
+  } catch {
+    // Silent: this is a UX nicety, not the price source of truth.
+  }
 }
 
 function getFulfillmentType() {
@@ -200,6 +254,7 @@ if (form) {
     return;
   }
 
+  await reconcilePricesOnce();
   renderCartItems();
   updateDeliveryFieldVisibility();
 })();
