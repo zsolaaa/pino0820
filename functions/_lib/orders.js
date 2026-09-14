@@ -58,17 +58,33 @@ export async function computeOrderTotals(env, { items, fulfillment_type }) {
   let subtotal = 0;
 
   for (const item of items) {
+    // Prefer the product's own name in every message below: it exists
+    // whenever the row does, so the customer knows exactly which line to
+    // remove instead of hunting for an internal database id in their cart.
     const product = productMap.get(item.product_id);
-    if (!product || !product.is_available) {
-      throw new OrderValidationError(`A(z) ${item.product_id} azonosítójú termék nem elérhető.`);
+    if (!product) {
+      throw new OrderValidationError(
+        "Az egyik kosárban lévő tétel már nem található a menüben. Frissítsd az oldalt, és állítsd össze újra a rendelésed."
+      );
+    }
+    if (!product.is_available) {
+      throw new OrderValidationError(`„${product.name}” jelenleg elfogyott — vedd ki a kosaradból a rendelés folytatásához.`);
     }
 
     const modifiers = [];
     let modifierTotal = 0;
     for (const modId of item.modifier_product_ids || []) {
       const modProduct = productMap.get(modId);
-      if (!modProduct || !modProduct.is_available || !modProduct.is_modifier_eligible) {
-        throw new OrderValidationError(`A(z) ${modId} azonosítójú extra feltét nem választható.`);
+      if (!modProduct) {
+        throw new OrderValidationError(
+          "Az egyik választott extra feltét már nem található a menüben. Frissítsd az oldalt, és állítsd össze újra a rendelésed."
+        );
+      }
+      if (!modProduct.is_available) {
+        throw new OrderValidationError(`A(z) „${modProduct.name}” extra feltét jelenleg elfogyott — vedd ki a kosaradból a rendelés folytatásához.`);
+      }
+      if (!modProduct.is_modifier_eligible) {
+        throw new OrderValidationError(`A(z) „${modProduct.name}” nem választható extra feltétként.`);
       }
       modifiers.push({ product_id: modProduct.id, name: modProduct.name, price: modProduct.price });
       modifierTotal += modProduct.price;
