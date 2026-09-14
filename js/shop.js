@@ -15,7 +15,9 @@ const cartBarInfo = document.getElementById("cart-bar-info");
 
 let allProducts = [];
 let activeCategory = null;
-let temporarilyPaused = false;
+// Set from /api/shop-status: non-null while ordering is blocked (admin pause
+// or outside opening hours), and carries the short label for the card buttons.
+let orderingBlocked = null;
 
 async function fetchProducts() {
   const res = await fetch("/api/products");
@@ -109,7 +111,7 @@ function renderCard(product, modifierProducts) {
     body.appendChild(desc);
   }
 
-  const canCustomize = window.ORDERING_ENABLED && !temporarilyPaused && modifierProducts.length > 0;
+  const canCustomize = window.ORDERING_ENABLED && !orderingBlocked && modifierProducts.length > 0;
   let modifierPanel = null;
   if (canCustomize) {
     const toggle = document.createElement("button");
@@ -159,7 +161,7 @@ function renderCard(product, modifierProducts) {
   addBtn.type = "button";
   addBtn.className = "product-card-add";
 
-  if (window.ORDERING_ENABLED && !temporarilyPaused) {
+  if (window.ORDERING_ENABLED && !orderingBlocked) {
     addBtn.textContent = "Kosárba";
     addBtn.addEventListener("click", () => {
       const selectedModifiers = modifierPanel
@@ -185,7 +187,7 @@ function renderCard(product, modifierProducts) {
       setTimeout(() => (addBtn.textContent = "Kosárba"), 900);
     });
   } else {
-    addBtn.textContent = temporarilyPaused ? "Szünetel" : "Hamarosan";
+    addBtn.textContent = orderingBlocked ? orderingBlocked.buttonLabel : "Hamarosan";
     addBtn.disabled = true;
   }
   footer.appendChild(addBtn);
@@ -233,11 +235,13 @@ window.addEventListener("cart:updated", updateCartBar);
     if (cartBar) cartBar.remove();
   } else {
     const status = await PinocchioCart.fetchShopStatus();
-    if (status.is_paused) {
-      temporarilyPaused = true;
+    orderingBlocked = PinocchioCart.orderingBlockedInfo(status);
+    if (orderingBlocked) {
       const notice = document.getElementById("temp-pause-notice");
+      const title = document.getElementById("temp-pause-title");
       const message = document.getElementById("temp-pause-message");
-      if (message) message.textContent = PinocchioCart.formatPauseMessage(status.paused_until);
+      if (title) title.textContent = orderingBlocked.title;
+      if (message) message.textContent = orderingBlocked.message;
       if (notice) notice.hidden = false;
       if (cartBar) cartBar.remove();
     }
@@ -254,5 +258,5 @@ window.addEventListener("cart:updated", updateCartBar);
   activeCategory = categories[0];
   renderTabs(categories);
   renderGrid();
-  if (window.ORDERING_ENABLED && !temporarilyPaused) updateCartBar();
+  if (window.ORDERING_ENABLED && !orderingBlocked) updateCartBar();
 })();

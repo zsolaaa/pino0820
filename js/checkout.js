@@ -180,10 +180,13 @@ if (form) {
   }
 
   const status = await PinocchioCart.fetchShopStatus();
-  if (status.is_paused) {
+  const blocked = PinocchioCart.orderingBlockedInfo(status);
+  if (blocked) {
     const notice = document.getElementById("temp-pause-notice");
+    const title = document.getElementById("temp-pause-title");
     const message = document.getElementById("temp-pause-message");
-    if (message) message.textContent = PinocchioCart.formatPauseMessage(status.paused_until);
+    if (title) title.textContent = blocked.title;
+    if (message) message.textContent = blocked.message;
     if (notice) notice.hidden = false;
     document.getElementById("cart-review-section").style.display = "none";
     formSection.style.display = "none";

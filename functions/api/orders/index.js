@@ -4,6 +4,7 @@ import { checkRateLimit, getClientIp } from "../../_lib/rateLimit.js";
 import { verifyTurnstile } from "../../_lib/turnstile.js";
 import { ORDERING_ENABLED } from "../../_lib/config.js";
 import { getShopStatus } from "../../_lib/shopStatus.js";
+import { getOrderingHours } from "../../_lib/openingHours.js";
 
 const FULFILLMENT_TYPES = ["delivery", "pickup"];
 const PAYMENT_METHODS = ["cod_cash", "cod_card"];
@@ -29,6 +30,14 @@ export async function onRequestPost({ request, env }) {
   if (!ORDERING_ENABLED) {
     return errorResponse(
       "Az online rendelés jelenleg szünetel, hamarosan újra elérhető lesz. Addig hívj minket telefonon: +36 30 755 6846.",
+      503
+    );
+  }
+
+  const hours = getOrderingHours();
+  if (!hours.is_open) {
+    return errorResponse(
+      `Jelenleg zárva vagyunk. Online rendelést minden nap ${hours.opens_at} és ${hours.last_order_at} között tudsz leadni.`,
       503
     );
   }

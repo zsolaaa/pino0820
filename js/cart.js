@@ -73,18 +73,48 @@ function formatHuf(amount) {
   return `${amount.toLocaleString("hu-HU")} Ft`;
 }
 
-// Checks the admin-toggleable temporary order pause (separate from the
-// permanent ORDERING_ENABLED kill switch above). Fails open — a transient
-// network/API error is treated as "not paused" so it never blocks ordering
-// on its own; the order-creation endpoint enforces the real pause either way.
+// Current ordering availability: the admin-toggleable temporary pause plus
+// the opening-hours window (both computed server-side). Separate from the
+// permanent ORDERING_ENABLED kill switch above. Fails open — a transient
+// network/API error never blocks ordering on its own; the order-creation
+// endpoint enforces both rules either way.
+const SHOP_STATUS_FALLBACK = {
+  is_paused: false,
+  reason: null,
+  paused_until: null,
+  is_open: true,
+  opens_at: null,
+  last_order_at: null,
+};
+
 async function fetchShopStatus() {
   try {
     const res = await fetch("/api/shop-status");
-    if (!res.ok) return { is_paused: false, reason: null, paused_until: null };
+    if (!res.ok) return { ...SHOP_STATUS_FALLBACK };
     return await res.json();
   } catch {
-    return { is_paused: false, reason: null, paused_until: null };
+    return { ...SHOP_STATUS_FALLBACK };
   }
+}
+
+// Returns the banner copy + short button label when ordering is blocked,
+// or null when orders can be taken right now.
+function orderingBlockedInfo(status) {
+  if (status.is_paused) {
+    return {
+      title: "Átmenetileg szünetel az online rendelés",
+      message: formatPauseMessage(status.paused_until),
+      buttonLabel: "Szünetel",
+    };
+  }
+  if (status.is_open === false) {
+    return {
+      title: "Most zárva vagyunk",
+      message: `Online rendelést minden nap ${status.opens_at} és ${status.last_order_at} között tudsz leadni.`,
+      buttonLabel: "Zárva",
+    };
+  }
+  return null;
 }
 
 function formatPauseMessage(pausedUntil) {
@@ -114,4 +144,5 @@ window.PinocchioCart = {
   formatHuf,
   fetchShopStatus,
   formatPauseMessage,
+  orderingBlockedInfo,
 };

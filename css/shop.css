@@ -26,6 +26,10 @@
   padding: clamp(1.75rem, 4vw, 2.75rem);
   margin-top: 1.75rem;
 }
+/* The display:flex above outranks the UA sheet's [hidden] { display: none },
+   so these banners need the attribute honoured explicitly — they're toggled
+   by the `hidden` property from shop.js/checkout.js. */
+.coming-soon-banner[hidden] { display: none; }
 .coming-soon-icon {
   display: inline-flex;
   align-items: center;
