@@ -66,3 +66,22 @@ export function startOfBudapestMonth(date = new Date()) {
 export function toSqlUtc(date) {
   return date.toISOString().slice(0, 19).replace("T", " ");
 }
+
+// The Budapest calendar date ("YYYY-MM-DD") an instant falls on.
+export function budapestDateStr(date = new Date()) {
+  const p = budapestParts(date);
+  return `${p.year}-${String(p.month).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`;
+}
+
+// The UTC half-open range [since, until) covering one Budapest calendar date,
+// ready to compare against created_at.
+export function budapestDayRange(dateStr) {
+  const [year, month, day] = dateStr.split("-").map(Number);
+  // Midday keeps the offset seed clear of both DST transition hours;
+  // localMidnightUtc re-resolves the offset against the candidate anyway.
+  const reference = new Date(Date.UTC(year, month - 1, day, 12));
+  return {
+    since: toSqlUtc(localMidnightUtc(year, month, day, reference)),
+    until: toSqlUtc(localMidnightUtc(year, month, day + 1, reference)),
+  };
+}

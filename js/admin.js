@@ -391,6 +391,172 @@ if (productsList) {
   loadProducts();
 }
 
+const closingPanel = document.getElementById("closing-panel");
+const closingDateInput = document.getElementById("closing-date");
+const closingHistoryList = document.getElementById("closing-history-list");
+
+// "2026-09-14" -> "2026. 09. 14." — the date is the whole point of this
+// screen, so it gets spelled out the Hungarian way everywhere it appears.
+function formatBusinessDate(dateStr) {
+  const [year, month, day] = dateStr.split("-");
+  return `${year}. ${month}. ${day}.`;
+}
+
+function formatClosedAt(closedAt) {
+  const date = new Date(closedAt.replace(" ", "T") + "Z");
+  return date.toLocaleString("hu-HU", { timeZone: "Europe/Budapest", dateStyle: "short", timeStyle: "short" });
+}
+
+function renderClosing(data) {
+  closingPanel.innerHTML = "";
+
+  const heading = document.createElement("div");
+  heading.className = "closing-heading";
+  heading.innerHTML = `
+    <span class="closing-date">${formatBusinessDate(data.business_date)}</span>
+    ${
+      data.is_closed
+        ? `<span class="closing-badge is-closed">Lezárva · ${formatClosedAt(data.closed_at)}</span>`
+        : `<span class="closing-badge">Még nincs lezárva</span>`
+    }
+  `;
+  closingPanel.appendChild(heading);
+
+  const rows = [
+    { label: "Online rendelések", value: String(data.order_count) },
+    { label: "Bruttó árbevétel", value: PinocchioCart.formatHuf(data.revenue), strong: true },
+    { label: "Bankkártya", value: PinocchioCart.formatHuf(data.card_revenue), indent: true },
+    { label: "Készpénz", value: PinocchioCart.formatHuf(data.cash_revenue), indent: true },
+    { label: "Törölt rendelések", value: String(data.cancelled_count) },
+  ];
+
+  const list = document.createElement("div");
+  list.className = "closing-rows";
+  for (const row of rows) {
+    const el = document.createElement("div");
+    el.className = "closing-row" + (row.indent ? " is-indented" : "") + (row.strong ? " is-strong" : "");
+    el.innerHTML = `<span>${row.label}</span><span>${row.value}</span>`;
+    list.appendChild(el);
+  }
+  closingPanel.appendChild(list);
+
+  if (!data.is_closed) {
+    closingPanel.appendChild(renderClosingAction(data.business_date));
+  }
+}
+
+function renderClosingAction(businessDate) {
+  const wrap = document.createElement("div");
+
+  const closeBtn = document.createElement("button");
+  closeBtn.type = "button";
+  closeBtn.className = "btn closing-btn";
+  closeBtn.textContent = "NAPI ZÁRÁS";
+
+  closeBtn.addEventListener("click", () => {
+    wrap.innerHTML = "";
+    const confirmRow = document.createElement("div");
+    confirmRow.className = "closing-confirm";
+    confirmRow.innerHTML = `<p>Biztosan lezárod a <strong>${formatBusinessDate(businessDate)}</strong> napot? A nap számai ezzel rögzülnek.</p>`;
+
+    const actions = document.createElement("div");
+    actions.className = "pause-form-actions";
+
+    const yesBtn = document.createElement("button");
+    yesBtn.type = "button";
+    yesBtn.className = "btn btn-primary";
+    yesBtn.textContent = `Igen, ${formatBusinessDate(businessDate)} lezárása`;
+    yesBtn.addEventListener("click", async () => {
+      yesBtn.disabled = true;
+      const res = await fetch("/api/admin/closing", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        body: JSON.stringify({ business_date: businessDate }),
+      });
+      if (res.status === 401) {
+        window.location.href = "login.html";
+        return;
+      }
+      if (!res.ok) {
+        yesBtn.disabled = false;
+        const error = document.createElement("p");
+        error.className = "closing-error";
+        const data = await res.json().catch(() => ({}));
+        error.textContent = data.error || "Nem sikerült lezárni a napot.";
+        confirmRow.appendChild(error);
+        return;
+      }
+      loadClosing(businessDate);
+    });
+    actions.appendChild(yesBtn);
+
+    const cancelBtn = document.createElement("button");
+    cancelBtn.type = "button";
+    cancelBtn.className = "btn btn-ghost";
+    cancelBtn.textContent = "Mégse";
+    cancelBtn.addEventListener("click", () => {
+      wrap.innerHTML = "";
+      wrap.appendChild(closeBtn);
+    });
+    actions.appendChild(cancelBtn);
+
+    confirmRow.appendChild(actions);
+    wrap.appendChild(confirmRow);
+  });
+
+  wrap.appendChild(closeBtn);
+  return wrap;
+}
+
+function renderClosingHistory(history) {
+  if (!history.length) {
+    closingHistoryList.textContent = "Még nem volt napi zárás.";
+    return;
+  }
+
+  closingHistoryList.innerHTML = "";
+  for (const entry of history) {
+    const row = document.createElement("div");
+    row.className = "closing-history-row";
+    row.innerHTML = `
+      <span class="closing-history-date">${formatBusinessDate(entry.business_date)}</span>
+      <span class="closing-history-meta">${entry.order_count} rendelés · ${PinocchioCart.formatHuf(entry.revenue)}</span>
+      <span class="closing-history-time">lezárva ${formatClosedAt(entry.closed_at)}</span>
+    `;
+    closingHistoryList.appendChild(row);
+  }
+}
+
+async function loadClosing(date) {
+  try {
+    const query = date ? `?date=${encodeURIComponent(date)}` : "";
+    const res = await fetch(`/api/admin/closing${query}`, { credentials: "same-origin" });
+    if (res.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+    if (!res.ok) {
+      closingPanel.textContent = "Nem sikerült betölteni a napi zárást.";
+      return;
+    }
+
+    const data = await res.json();
+    closingDateInput.value = data.business_date;
+    renderClosing(data);
+    renderClosingHistory(data.history || []);
+  } catch {
+    closingPanel.textContent = "Hálózati hiba történt a napi zárás betöltésekor.";
+  }
+}
+
+if (closingPanel) {
+  closingDateInput.addEventListener("change", () => {
+    if (closingDateInput.value) loadClosing(closingDateInput.value);
+  });
+  loadClosing();
+}
+
 const statsTiles = document.getElementById("stats-tiles");
 const topProductsList = document.getElementById("top-products-list");
 const periodTabs = document.getElementById("period-tabs");

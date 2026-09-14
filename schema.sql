@@ -79,6 +79,19 @@ CREATE TABLE shop_status (
 
 INSERT INTO shop_status (id, is_paused) VALUES (1, 0);
 
+-- One row per closed business day (Budapest calendar date). The figures are a
+-- snapshot taken at closing time, deliberately not recomputed afterwards, so a
+-- later cancellation can't silently rewrite a day that's already been settled.
+CREATE TABLE daily_closings (
+  business_date    TEXT PRIMARY KEY,
+  order_count      INTEGER NOT NULL,
+  cancelled_count  INTEGER NOT NULL,
+  revenue          INTEGER NOT NULL,
+  card_revenue     INTEGER NOT NULL,
+  cash_revenue     INTEGER NOT NULL,
+  closed_at        TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
 -- Fixed-window request counter, used for application-level rate limiting
 -- (order creation, admin login) since Cloudflare's zone-level Rate Limiting
 -- Rules require a custom domain on the account, which pinocchiobaja.hu isn't

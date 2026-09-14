@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Statisztika — Pinocchio Admin</title>
+<title>Napi zárás — Pinocchio Admin</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,30 +14,29 @@
 <body>
 <div class="admin-shell wrap">
   <div class="shop-header">
-    <h1>Statisztika</h1>
+    <h1>Napi zárás</h1>
   </div>
 
   <nav class="admin-nav">
     <a href="rendelesek.html">Rendelések</a>
     <a href="termekek.html">Termékek</a>
-    <a href="statisztika.html" class="is-active">Statisztika</a>
-    <a href="napi-zaras.html">Napi zárás</a>
+    <a href="statisztika.html">Statisztika</a>
+    <a href="napi-zaras.html" class="is-active">Napi zárás</a>
   </nav>
 
   <div class="admin-toolbar">
-    <div class="period-tabs" id="period-tabs">
-      <button type="button" class="period-tab is-active" data-period="today">Ma</button>
-      <button type="button" class="period-tab" data-period="week">Ez a hét</button>
-      <button type="button" class="period-tab" data-period="month">Ez a hónap</button>
-    </div>
+    <label class="closing-date-picker">
+      <span>Lezárandó nap</span>
+      <input type="date" id="closing-date">
+    </label>
     <button type="button" id="admin-logout" class="btn btn-ghost">Kijelentkezés</button>
   </div>
 
-  <div class="stat-tiles" id="stats-tiles"></div>
+  <div id="closing-panel">Betöltés...</div>
 
-  <div class="top-products">
-    <h2>Legnépszerűbb termékek</h2>
-    <div id="top-products-list">Betöltés...</div>
+  <div class="closing-history">
+    <h2>Korábbi zárások</h2>
+    <div id="closing-history-list"></div>
   </div>
 </div>
 
