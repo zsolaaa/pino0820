@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Termékek — Pinocchio Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Big+Shoulders+Text:wght@500;600;700&family=Literata:ital,opsz,wght@0,18..144,400;0,18..144,500;0,18..144,600;0,18..144,700;1,18..144,500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css">
+<link rel="stylesheet" href="../css/shop.css">
+</head>
+<body>
+<div class="admin-shell wrap">
+  <div class="shop-header">
+    <h1>Termékek</h1>
+  </div>
+
+  <nav class="admin-nav">
+    <a href="rendelesek.html">Rendelések</a>
+    <a href="termekek.html" class="is-active">Termékek</a>
+  </nav>
+
+  <div class="admin-toolbar">
+    <div></div>
+    <button type="button" id="admin-logout" class="btn btn-ghost">Kijelentkezés</button>
+  </div>
+  <p style="color: var(--text-on-cream-soft); font-size: 0.85rem; margin: -0.75rem 0 1.5rem;">Kapcsold ki egy tételt, ha elfogyott — azonnal eltűnik a webshopból, amíg vissza nem kapcsolod.</p>
+
+  <div id="products-list">Betöltés...</div>
+</div>
+
+<script src="../js/cart.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

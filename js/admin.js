@@ -254,13 +254,128 @@ function renderOrders(orders, newIds = new Set()) {
   }
 }
 
-if (ordersTableBody) {
-  refreshBtn.addEventListener("click", loadOrders);
-  statusFilter.addEventListener("change", loadOrders);
+const productsList = document.getElementById("products-list");
+
+async function loadProducts() {
+  if (!productsList) return;
+
+  try {
+    const res = await fetch("/api/admin/products", { credentials: "same-origin" });
+
+    if (res.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+
+    if (!res.ok) {
+      productsList.textContent = "Nem sikerült betölteni a termékeket.";
+      return;
+    }
+
+    const data = await res.json();
+    renderProducts(data.products || []);
+  } catch {
+    productsList.textContent = "Hálózati hiba történt a termékek betöltésekor.";
+  }
+}
+
+function renderProducts(products) {
+  if (!products.length) {
+    productsList.textContent = "Nincs megjeleníthető termék.";
+    return;
+  }
+
+  const byCategory = new Map();
+  for (const p of products) {
+    if (!byCategory.has(p.category)) byCategory.set(p.category, []);
+    byCategory.get(p.category).push(p);
+  }
+
+  productsList.innerHTML = "";
+  for (const [category, items] of byCategory) {
+    const section = document.createElement("div");
+    section.className = "product-category";
+
+    const heading = document.createElement("h2");
+    heading.textContent = category;
+    section.appendChild(heading);
+
+    for (const product of items) {
+      section.appendChild(renderProductRow(product));
+    }
+
+    productsList.appendChild(section);
+  }
+}
+
+function renderProductRow(product) {
+  const row = document.createElement("div");
+  row.className = "product-row" + (product.is_available ? "" : " is-unavailable");
+
+  const info = document.createElement("div");
+  info.innerHTML = `<span class="product-name">${product.name}</span><span class="product-price">${PinocchioCart.formatHuf(product.price)}</span>`;
+  row.appendChild(info);
+
+  const toggleWrap = document.createElement("label");
+  toggleWrap.className = "availability-toggle";
+
+  const toggleLabel = document.createElement("span");
+  toggleLabel.className = "availability-toggle-label";
+  toggleLabel.textContent = product.is_available ? "Elérhető" : "Elfogyott";
+  toggleWrap.appendChild(toggleLabel);
+
+  const switchEl = document.createElement("span");
+  switchEl.className = "switch";
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = product.is_available;
+  const track = document.createElement("span");
+  track.className = "switch-track";
+  switchEl.appendChild(checkbox);
+  switchEl.appendChild(track);
+  toggleWrap.appendChild(switchEl);
+  row.appendChild(toggleWrap);
+
+  checkbox.addEventListener("change", async () => {
+    checkbox.disabled = true;
+    const nextAvailable = checkbox.checked;
+    const res = await fetch(`/api/admin/products/${product.id}/availability`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      body: JSON.stringify({ is_available: nextAvailable }),
+    });
+    if (res.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+    if (!res.ok) {
+      checkbox.checked = !nextAvailable; // revert on failure
+      checkbox.disabled = false;
+      return;
+    }
+    row.classList.toggle("is-unavailable", !nextAvailable);
+    toggleLabel.textContent = nextAvailable ? "Elérhető" : "Elfogyott";
+    checkbox.disabled = false;
+  });
+
+  return row;
+}
+
+if (productsList) {
+  loadProducts();
+}
+
+if (logoutBtn) {
   logoutBtn.addEventListener("click", async () => {
     await fetch("/api/admin/logout", { method: "POST", credentials: "same-origin" });
     window.location.href = "login.html";
   });
+}
+
+if (ordersTableBody) {
+  refreshBtn.addEventListener("click", loadOrders);
+  statusFilter.addEventListener("change", loadOrders);
 
   if (soundToggle) {
     setSoundOn(isSoundOn());

@@ -444,6 +444,24 @@
 }
 .admin-login-card h1 { font-size: 1.8rem; margin-bottom: 1.5rem; }
 
+.admin-nav {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid rgba(28,20,14,0.1);
+}
+.admin-nav a {
+  font-family: var(--label);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-on-cream-soft);
+  text-decoration: none;
+  padding: 0 0 0.75rem;
+  border-bottom: 2px solid transparent;
+}
+.admin-nav a.is-active { color: var(--text-on-cream); border-bottom-color: var(--red); }
+
 .admin-toolbar {
   display: flex;
   align-items: center;
@@ -507,6 +525,46 @@
 }
 .status-badge.completed { background: var(--green); color: var(--text-on-green); }
 .status-badge.cancelled { background: rgba(28,20,14,0.15); color: var(--text-on-cream-soft); }
+
+.product-category { margin-bottom: 2rem; }
+.product-category h2 {
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
+}
+.product-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid rgba(28,20,14,0.1);
+}
+.product-row.is-unavailable .product-name { color: var(--text-on-cream-soft); text-decoration: line-through; }
+.product-name { font-weight: 600; }
+.product-price { color: var(--text-on-cream-soft); font-size: 0.9rem; margin-left: 0.5rem; }
+
+.availability-toggle { display: flex; align-items: center; gap: 0.6rem; flex-shrink: 0; }
+.availability-toggle-label { font-family: var(--label); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--text-on-cream-soft); width: 5.5rem; }
+.switch { position: relative; display: inline-block; width: 42px; height: 24px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.switch-track {
+  position: absolute; inset: 0; cursor: pointer;
+  background: rgba(28,20,14,0.25);
+  border-radius: 999px;
+  transition: background 0.15s ease;
+}
+.switch-track::before {
+  content: "";
+  position: absolute;
+  height: 18px; width: 18px;
+  left: 3px; bottom: 3px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.15s ease;
+}
+.switch input:checked + .switch-track { background: var(--green); }
+.switch input:checked + .switch-track::before { transform: translateX(18px); }
+.switch input:disabled + .switch-track { opacity: 0.5; cursor: default; }
 
 @keyframes new-order-flash {
   0%, 100% { background: transparent; }

@@ -10,6 +10,7 @@ function mapProduct(row) {
     is_spicy: !!row.is_spicy,
     image_file: row.image_file,
     is_modifier_eligible: !!row.is_modifier_eligible,
+    is_available: !!row.is_available,
   };
 }
 

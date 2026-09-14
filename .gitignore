@@ -6,3 +6,4 @@ node_modules/
 
 # SEO audit artifacts (local only)
 pinocchiobaja.hu-audit/
+.dev.vars
