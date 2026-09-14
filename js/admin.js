@@ -162,7 +162,7 @@ async function loadSummary() {
   if (!summaryOrderCount) return;
 
   try {
-    const res = await fetch("/api/admin/orders/summary", { credentials: "same-origin" });
+    const res = await fetch("/api/admin/stats?period=today", { credentials: "same-origin" });
     if (res.status === 401) {
       window.location.href = "login.html";
       return;
@@ -389,6 +389,82 @@ function renderProductRow(product) {
 
 if (productsList) {
   loadProducts();
+}
+
+const statsTiles = document.getElementById("stats-tiles");
+const topProductsList = document.getElementById("top-products-list");
+const periodTabs = document.getElementById("period-tabs");
+
+function renderStatTiles(stats) {
+  const tiles = [
+    { label: "Rendelések", value: String(stats.order_count), note: stats.cancelled_count ? `+${stats.cancelled_count} törölve` : "" },
+    { label: "Bevétel", value: PinocchioCart.formatHuf(stats.revenue) },
+    { label: "Átlagos kosárérték", value: PinocchioCart.formatHuf(stats.average_order_value) },
+    { label: "Szállítás", value: String(stats.delivery_count) },
+    { label: "Elvitel", value: String(stats.pickup_count) },
+  ];
+
+  statsTiles.innerHTML = "";
+  for (const tile of tiles) {
+    const el = document.createElement("div");
+    el.className = "stat-tile";
+    el.innerHTML = `
+      <span class="stat-tile-label">${tile.label}</span>
+      <span class="stat-tile-value">${tile.value}</span>
+      ${tile.note ? `<span class="stat-tile-note">${tile.note}</span>` : ""}
+    `;
+    statsTiles.appendChild(el);
+  }
+}
+
+function renderTopProducts(products) {
+  if (!products.length) {
+    topProductsList.textContent = "Ebben az időszakban még nincs eladás.";
+    return;
+  }
+
+  topProductsList.innerHTML = "";
+  products.forEach((product, idx) => {
+    const row = document.createElement("div");
+    row.className = "top-product-row";
+    row.innerHTML = `
+      <span class="top-product-rank">${idx + 1}.</span>
+      <span class="top-product-name">${product.name}</span>
+      <span class="top-product-qty">${product.quantity} db</span>
+    `;
+    topProductsList.appendChild(row);
+  });
+}
+
+async function loadStats(period) {
+  try {
+    const res = await fetch(`/api/admin/stats?period=${encodeURIComponent(period)}`, { credentials: "same-origin" });
+    if (res.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+    if (!res.ok) {
+      topProductsList.textContent = "Nem sikerült betölteni a statisztikát.";
+      return;
+    }
+
+    const stats = await res.json();
+    renderStatTiles(stats);
+    renderTopProducts(stats.top_products || []);
+  } catch {
+    topProductsList.textContent = "Hálózati hiba történt a statisztika betöltésekor.";
+  }
+}
+
+if (statsTiles) {
+  periodTabs.addEventListener("click", (e) => {
+    const tab = e.target.closest(".period-tab");
+    if (!tab) return;
+    periodTabs.querySelectorAll(".period-tab").forEach((t) => t.classList.toggle("is-active", t === tab));
+    loadStats(tab.dataset.period);
+  });
+
+  loadStats("today");
 }
 
 const PAUSE_REASON_LABELS = {
