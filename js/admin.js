@@ -155,8 +155,32 @@ function playPreviewBeep() {
   });
 }
 
+const summaryOrderCount = document.getElementById("summary-order-count");
+const summaryRevenue = document.getElementById("summary-revenue");
+
+async function loadSummary() {
+  if (!summaryOrderCount) return;
+
+  try {
+    const res = await fetch("/api/admin/orders/summary", { credentials: "same-origin" });
+    if (res.status === 401) {
+      window.location.href = "login.html";
+      return;
+    }
+    if (!res.ok) return;
+
+    const data = await res.json();
+    summaryOrderCount.textContent = String(data.order_count);
+    summaryRevenue.textContent = PinocchioCart.formatHuf(data.revenue);
+  } catch {
+    // Silent: the summary tiles just keep their last known values on a transient error.
+  }
+}
+
 async function loadOrders() {
   if (!ordersTableBody) return;
+
+  loadSummary();
 
   const filter = statusFilter.value;
   const url = filter ? `/api/admin/orders?status=${encodeURIComponent(filter)}` : "/api/admin/orders";
@@ -243,6 +267,7 @@ function renderOrders(orders, newIds = new Set()) {
         return;
       }
       statusSelect.disabled = false;
+      loadSummary();
     });
 
     tr.children[5].appendChild(statusSelect);
