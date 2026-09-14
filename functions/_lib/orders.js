@@ -1,32 +1,28 @@
 import { getProductsByIds } from "./db.js";
+import { budapestDateStr } from "./budapestTime.js";
 
 const DELIVERY_FEE = 200;
 const MAX_QUANTITY = 50;
 
 export class OrderValidationError extends Error {}
 
-function budapestDateStamp() {
-  // Europe/Budapest date, formatted YYYYMMDD, for the human order number prefix.
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Europe/Budapest",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date());
-  const get = (type) => parts.find((p) => p.type === type).value;
-  return `${get("year")}${get("month")}${get("day")}`;
-}
-
+// COUNT(*) + 1 looked fine but isn't: it reads existing rows and writes the
+// new one in two separate D1 round trips (with a Turnstile network call in
+// between), so two orders placed close together can read the same count and
+// generate the same number — the second INSERT then fails its UNIQUE
+// constraint. A single INSERT ... ON CONFLICT ... RETURNING is one atomic
+// statement, so concurrent callers can never be handed the same seq — the
+// same pattern rateLimit.js already relies on for its counters.
 export async function generateOrderNumber(env) {
-  const stamp = budapestDateStamp();
-  const prefix = `PZ-${stamp}-`;
-  const { results } = await env.DB.prepare(
-    "SELECT COUNT(*) AS count FROM orders WHERE order_number LIKE ?"
+  const stamp = budapestDateStr().replaceAll("-", "");
+  const row = await env.DB.prepare(
+    `INSERT INTO order_number_counters (business_date, seq) VALUES (?, 1)
+     ON CONFLICT(business_date) DO UPDATE SET seq = seq + 1
+     RETURNING seq`
   )
-    .bind(`${prefix}%`)
-    .all();
-  const seq = (results[0]?.count ?? 0) + 1;
-  return `${prefix}${String(seq).padStart(4, "0")}`;
+    .bind(stamp)
+    .first();
+  return `PZ-${stamp}-${String(row.seq).padStart(4, "0")}`;
 }
 
 // Validates and re-prices an order against the DB. Never trusts client-submitted

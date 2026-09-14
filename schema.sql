@@ -43,6 +43,15 @@ CREATE TABLE orders (
 CREATE INDEX idx_orders_status ON orders(status);
 CREATE INDEX idx_orders_created ON orders(created_at);
 
+-- Backs the human order number (PZ-YYYYMMDD-0001). A single atomic
+-- INSERT ... ON CONFLICT ... RETURNING per generated number, rather than
+-- COUNT(*) + 1, so two orders placed at the same moment can't ever compute
+-- the same sequence number.
+CREATE TABLE order_number_counters (
+  business_date  TEXT PRIMARY KEY,
+  seq            INTEGER NOT NULL DEFAULT 0
+);
+
 CREATE TABLE order_items (
   id            INTEGER PRIMARY KEY AUTOINCREMENT,
   order_id      INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
