@@ -1,4 +1,6 @@
-// admin/login.html + admin/rendelesek.html — shared admin script.
+// Shared script for every admin page (login, rendelesek, termekek,
+// statisztika, napi-zaras). Each page's block is guarded by the presence of
+// its own root element, so the same file can serve all of them.
 
 const STATUS_LABELS = {
   new: "Új",
@@ -8,6 +10,28 @@ const STATUS_LABELS = {
   cancelled: "Törölve",
 };
 const STATUSES = Object.keys(STATUS_LABELS);
+
+// Order fields (name, phone, address, notes) are typed by customers at
+// checkout and stored verbatim, so every dynamic value has to be escaped
+// before it goes near innerHTML — otherwise a customer could run script in
+// the admin's logged-in session just by ordering.
+function esc(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => {
+    return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char];
+  });
+}
+
+// created_at/closed_at are stored as UTC with no offset marker ("2026-09-14
+// 17:01:06"). Parsed as-is, browsers read that as local time and show the
+// wrong moment, so it needs the explicit T/Z before formatting.
+function formatSqlDateTime(sqlUtc) {
+  const date = new Date(String(sqlUtc).replace(" ", "T") + "Z");
+  return date.toLocaleString("hu-HU", {
+    timeZone: "Europe/Budapest",
+    dateStyle: "short",
+    timeStyle: "short",
+  });
+}
 
 const loginForm = document.getElementById("admin-login-form");
 const loginError = document.getElementById("admin-login-error");
@@ -227,18 +251,18 @@ function renderOrders(orders, newIds = new Set()) {
 
     const itemsList = order.items
       .map((item) => {
-        const mods = (item.modifiers || []).map((m) => m.name).join(", ");
-        return `<li>${item.quantity}× ${item.product_name}${mods ? ` (+${mods})` : ""}</li>`;
+        const mods = (item.modifiers || []).map((m) => esc(m.name)).join(", ");
+        return `<li>${item.quantity}× ${esc(item.product_name)}${mods ? ` (+${mods})` : ""}</li>`;
       })
       .join("");
 
     const fulfillment = order.fulfillment_type === "delivery" ? "Szállítás" : "Elvitel";
-    const address = order.fulfillment_type === "delivery" ? `<br>${order.delivery_address}` : "";
+    const address = order.fulfillment_type === "delivery" ? `<br>${esc(order.delivery_address)}` : "";
 
     tr.innerHTML = `
-      <td>${order.order_number}<br><small>${new Date(order.created_at).toLocaleString("hu-HU")}</small></td>
-      <td>${order.customer_name}<br><a href="tel:${order.customer_phone}">${order.customer_phone}</a></td>
-      <td>${fulfillment}${address}${order.notes ? `<br><em>${order.notes}</em>` : ""}</td>
+      <td>${esc(order.order_number)}<br><small>${formatSqlDateTime(order.created_at)}</small></td>
+      <td>${esc(order.customer_name)}<br><a href="tel:${esc(order.customer_phone)}">${esc(order.customer_phone)}</a></td>
+      <td>${fulfillment}${address}${order.notes ? `<br><em>${esc(order.notes)}</em>` : ""}</td>
       <td class="order-items-cell"><ul>${itemsList}</ul></td>
       <td>${PinocchioCart.formatHuf(order.total)}</td>
       <td></td>
@@ -254,18 +278,26 @@ function renderOrders(orders, newIds = new Set()) {
       if (s === order.status) opt.selected = true;
       statusSelect.appendChild(opt);
     }
+    let lastSavedStatus = order.status;
     statusSelect.addEventListener("change", async () => {
       statusSelect.disabled = true;
+      const nextStatus = statusSelect.value;
       const res = await fetch(`/api/admin/orders/${order.id}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "same-origin",
-        body: JSON.stringify({ status: statusSelect.value }),
+        body: JSON.stringify({ status: nextStatus }),
       });
       if (res.status === 401) {
         window.location.href = "login.html";
         return;
       }
+      if (!res.ok) {
+        statusSelect.value = lastSavedStatus; // revert: the server didn't take it
+        statusSelect.disabled = false;
+        return;
+      }
+      lastSavedStatus = nextStatus;
       statusSelect.disabled = false;
       loadSummary();
     });
@@ -338,7 +370,7 @@ function renderProductRow(product) {
   row.className = "product-row" + (product.is_available ? "" : " is-unavailable");
 
   const info = document.createElement("div");
-  info.innerHTML = `<span class="product-name">${product.name}</span><span class="product-price">${PinocchioCart.formatHuf(product.price)}</span>`;
+  info.innerHTML = `<span class="product-name">${esc(product.name)}</span><span class="product-price">${PinocchioCart.formatHuf(product.price)}</span>`;
   row.appendChild(info);
 
   const toggleWrap = document.createElement("label");
@@ -402,11 +434,6 @@ function formatBusinessDate(dateStr) {
   return `${year}. ${month}. ${day}.`;
 }
 
-function formatClosedAt(closedAt) {
-  const date = new Date(closedAt.replace(" ", "T") + "Z");
-  return date.toLocaleString("hu-HU", { timeZone: "Europe/Budapest", dateStyle: "short", timeStyle: "short" });
-}
-
 function renderClosing(data) {
   closingPanel.innerHTML = "";
 
@@ -416,7 +443,7 @@ function renderClosing(data) {
     <span class="closing-date">${formatBusinessDate(data.business_date)}</span>
     ${
       data.is_closed
-        ? `<span class="closing-badge is-closed">Lezárva · ${formatClosedAt(data.closed_at)}</span>`
+        ? `<span class="closing-badge is-closed">Lezárva · ${formatSqlDateTime(data.closed_at)}</span>`
         : `<span class="closing-badge">Még nincs lezárva</span>`
     }
   `;
@@ -522,7 +549,7 @@ function renderClosingHistory(history) {
     row.innerHTML = `
       <span class="closing-history-date">${formatBusinessDate(entry.business_date)}</span>
       <span class="closing-history-meta">${entry.order_count} rendelés · ${PinocchioCart.formatHuf(entry.revenue)}</span>
-      <span class="closing-history-time">lezárva ${formatClosedAt(entry.closed_at)}</span>
+      <span class="closing-history-time">lezárva ${formatSqlDateTime(entry.closed_at)}</span>
     `;
     closingHistoryList.appendChild(row);
   }
@@ -595,7 +622,7 @@ function renderTopProducts(products) {
     row.className = "top-product-row";
     row.innerHTML = `
       <span class="top-product-rank">${idx + 1}.</span>
-      <span class="top-product-name">${product.name}</span>
+      <span class="top-product-name">${esc(product.name)}</span>
       <span class="top-product-qty">${product.quantity} db</span>
     `;
     topProductsList.appendChild(row);
